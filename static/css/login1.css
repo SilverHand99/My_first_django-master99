@@ -1,0 +1,36 @@
+body{
+    min-height: 95vh;
+}
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    background: #23272b;
+}
+
+section {
+    background: black;
+    width: 700px;
+    padding: 40px;
+    border-radius: 10%;
+    box-shadow: 5px 5px 5px white;
+}
+
+label, input {
+    display: block;
+}
+
+button {
+    background: gray;
+    border-radius: 20%;
+    color: white;
+}
+
+form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}

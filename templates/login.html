@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/static/css/login1.css" rel="stylesheet">
+</head>
+<body>
+<section class="login">
+    <form method="post">
+        {% csrf_token %}
+        <label>
+            <input type="text" name="username" placeholder="Логин">
+        </label>
+        <label>
+            <input type="password" name="password" placeholder="Пароль">
+        </label>
+                  {{ form.as_p }}
+            <button type="submit">Войти</button>
+                    {{ user }}
+        <div>
+            {% if user.is_authenticated %}
+      <p>Logged as {{ user.username }}</p>
+      <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
+    {% else %}
+      <a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">
+        Login
+      </a>
+    {% endif %}
+        </div>
+    </form>
+</section>
+
+</body>
+</html>
