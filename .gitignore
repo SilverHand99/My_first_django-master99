@@ -1,3 +1,7 @@
 /staticfiles/
 /venv/
 /my_projekt/media/
+/media/
+/my_projekt/migrations/
+/db.sqlite3
+.idea
