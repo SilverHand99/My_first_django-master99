@@ -1,1 +1,1 @@
-web: gunicorn gettingstarted.wsgi --my_first_projekt
+web: gunicorn my_first_projekt.wsgi
