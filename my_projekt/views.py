@@ -156,7 +156,7 @@ class CartView(MasterView):
                 pass
             else:
                 cart = Cart.objects.get(user=request.user, active=True)
-                cart.delete_form_cart(cart)
+                cart.delete.form.cart(cart)
             return redirect('cart')
         else:
             return redirect('cart.html')
