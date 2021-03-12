@@ -1,0 +1,153 @@
+.to_remove {
+    border-radius: 10%;
+    background-color: black;
+    color: white;
+    width: 150px;
+    height: 30px;
+    display: block;
+    margin: 30px;
+    text-align: center;
+    animation: none;
+}
+
+.for_login{
+  display: flex;
+  color: var(--for_txt_login);
+  margin-left: 85%;
+    margin-bottom: 10px;
+  margin-top: 5px;
+  position: absolute;
+  background-color: var(--for_login);
+  border: 0;
+}
+.for_button{
+  background-color: var(--for_login);
+  border: 0;
+  color: var(--for_txt_login);
+  margin-left: 5px;
+}
+.for_user {
+  position: absolute;
+  margin-left: 90%;
+  margin-top: 30px;
+    width: 200px;
+}
+
+
+.sidenav{
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    background-color: black;
+    overflow-x: hidden;
+    padding-top: 60px;
+    transition: 0.5s;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+.for_button3{
+    background-color: var(--for_button3);
+    border: 0;
+    color: white;
+}
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    z-index: 100;
+}
+
+#main {
+    transition: margin-left .5s;
+    padding: 20px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
+.header {
+  width: 100%;
+  height: 70px;
+  background-color: var(--Header_color);
+  color: var(--Header_text);
+  display: flex;
+  box-shadow: 5px 5px 10px ;
+}
+.icon{
+  width: 60px;
+  margin-top: 5px;
+  margin-left: 70px;
+  height: 60px;
+  background-size: contain;
+  background-image: var(--Header_img);
+  position: absolute;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  padding: 0;
+  border: 0;
+}
+.for_header{
+  display: flex;
+  color: var(--Header_text);
+  margin-top: 10px;
+  margin-left: 100px;
+}
+body{
+  width: 100%;
+  height: 2800px;
+  background-color: var(--background_color);
+    margin: 0;
+}
+
+:root{
+  --background_color: #23272b;
+  --Header_color: black;
+  --Header_text: white;
+  --Text_to_story: white;
+  --Text_to_salon: white;
+  --Header_img: url("/static/img/tesal_icon.a46bf9d2ce8d.png");
+  --Footer_img: url("/static/img/to_footer1.ac28331f8168.jfif");
+  --Footer_hight: 280px;
+  --Footer_width: 380px;
+  --Footer_color: black;
+  --Footer_text: white;
+  --to_footerTXT: 50px;
+  --for_login: black;
+  --for_txt_login: white;
+    --for_button3: black;
+}
+:root[data-theme='light']{
+  --background_color: whitesmoke;
+  --Header_color: silver;
+  --Header_text: red;
+  --Text_to_story: black;
+  --Text_to_salon: black;
+  --Header_img: url("/static/img/tesla-logo2.ff6f38ad35ad.png");
+  --Footer_img: url("/static/img/to_footer21.d302c9a8118c.png");
+  --Footer_hight: 200px;
+  --Footer_width: 390px;
+  --Footer_color: silver;
+  --Footer_text: black;
+  --to_footerTXT: 120px;
+  --for_login: silver;
+  --for_txt_login: red;
+    --for_button3: silver;
+}
