@@ -12,4 +12,5 @@ urlpatterns = [
     path('', include('social_django.urls', namespace='social')),
     path('logout/', logout, {'next_page': settings.LOGOUT_REDIRECT_URL}, name='logout'),
     path('register/', views.oauth, name="register"),
+    path('cart/', views.CartView.as_view(), name='cart'),
 ]

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Category(models.Model):
@@ -30,3 +31,25 @@ class Car(models.Model):
 
 class Post(object):
     objects = None
+
+
+class Cart(models.Model):
+    session_key = models.CharField(max_length=999, blank=True, default='')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    total_cost = models.PositiveIntegerField()
+
+    def __str__(self):
+        return str(self.id)
+
+    def get_total(self):
+        items = CartContent.objects.filter(cart=self.id)
+        total = 0
+        for item in items:
+            total += item.product.price * item.qty
+        return total
+
+
+class CartContent(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product = models.ForeignKey(Car, on_delete=models.CASCADE)
+    qty = models.PositiveIntegerField(null=True)

@@ -15,20 +15,16 @@
         <label>
             <input type="password" name="password" placeholder="Пароль">
         </label>
-                  {{ form.as_p }}
-            <button type="submit">Войти</button>
-                    {{ user }}
-        <div>
-            {% if user.is_authenticated %}
-      <p>Logged as {{ user.username }}</p>
-      <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
-    {% else %}
-      <a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">
-        Login
-      </a>
-    {% endif %}
-        </div>
+        {{ form.as_p }}
+        <button type="submit">Войти</button>
+        {{ user }}
+
     </form>
+        {% if user.is_authenticated %}
+            <a class="btn btn-primary for_gog for_gog" content="" href="{% url 'logout' %}"></a>
+        {% else %}
+            <a class="d-block for_gog" href="{% url 'social:begin' 'google-oauth2' %}"></a>
+        {% endif %}
 </section>
 
 </body>

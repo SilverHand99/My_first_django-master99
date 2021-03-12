@@ -1,11 +1,62 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .models import Car
+from .models import Car, CartContent, Cart
 from .forms import SearchForm, LoginForm, RegisterForm
 from .models import Post
+from django.views import View
+from django.core.exceptions import ObjectDoesNotExist
 
 
 # Create your views here.
+class MasterView(View):
+
+    def get_cart_records(self, cart=None, response=None):
+        cart = self.get_cart() if cart is None else cart
+        if cart is not None:
+            cart_records = CartContent.objects.filter(cart_id=cart.id)
+        else:
+            cart_records = []
+
+        if response:
+            response.set_cookie('cart_count', len(cart_records))
+            return response
+
+        return cart_records
+
+    def get_cart(self, update_quantity=False):
+        if self.request.user.is_authenticated:
+            user_id = self.request.user.id
+            try:
+                cart = Cart.objects.get(user_id=user_id)
+            except ObjectDoesNotExist:
+                cart = Cart(user_id=user_id,
+                            total_cost=0)
+                cart.save()
+        else:
+            session_key = self.request.session.session_key
+            self.request.session.modified = True
+            if not session_key:
+                self.request.session.save()
+                session_key = self.request.session.session_key
+            try:
+                cart = Cart.objects.get(session_key=session_key)
+            except ObjectDoesNotExist:
+                cart = Cart(session_key=session_key,
+                            total_cost=0)
+                cart.save()
+
+            if self.request.user.is_authenticated:
+                try:
+                    cart = Cart.objects.get(session_key=session_key,
+                                            total_cost=0)
+                    cart.save()
+
+                except ObjectDoesNotExist:
+                    cart = Cart(session_key=session_key,
+                                total_cost=0)
+                    cart.save()
+
+        return cart
 
 
 def index(request):
@@ -72,3 +123,39 @@ def oauth(request):
     }
 
     return render(request, 'login.html', context)
+
+
+class CartView(MasterView):
+    def get(self, request):
+        cart = self.get_cart()
+        cart_records = self.get_cart_records(cart)
+        cart_total = cart.get_total() if cart else 0
+
+        context = {
+            'cart_records': cart_records,
+            'cart_total': cart_total,
+        }
+        return render(request, 'cart.html', context)
+
+    def post(self, request):
+        car = Car.objects.get(id=request.POST.get('car_id'))
+        cart = self.get_cart()
+        quantity = request.POST.get('qty')
+        cart_content, _ = CartContent.objects.get_or_create(cart=cart, product=car)
+        cart_content.qty = quantity
+        cart_content.save()
+        response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id)))
+        return response
+
+    def remove(self, cart_id, request):
+        if self.request.user.is_authenticated:
+            try:
+                cart_id = self.request.cart
+            except ObjectDoesNotExist:
+                pass
+            else:
+                cart = Cart.objects.get(user=request.user, active=True)
+                cart.remove_form_cart(cart_id)
+            return redirect('cart')
+        else:
+            return redirect('cart.html')
