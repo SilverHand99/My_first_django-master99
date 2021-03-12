@@ -5,6 +5,7 @@ from .forms import SearchForm, LoginForm, RegisterForm
 from .models import Post
 from django.views import View
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.generic import DeleteView, UpdateView
 
 
 # Create your views here.
@@ -147,15 +148,15 @@ class CartView(MasterView):
         response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id)))
         return response
 
-    def remove(self, cart_id, request):
+    def remove(self, cart, request):
         if self.request.user.is_authenticated:
             try:
-                cart_id = self.request.cart
+                cart = self.get_cart()
             except ObjectDoesNotExist:
                 pass
             else:
                 cart = Cart.objects.get(user=request.user, active=True)
-                cart.remove_form_cart(cart_id)
+                cart.delete_form_cart(cart)
             return redirect('cart')
         else:
             return redirect('cart.html')
