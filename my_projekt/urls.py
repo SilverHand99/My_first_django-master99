@@ -1,7 +1,7 @@
 from django.urls import path, include
 from my_projekt import views
 from django.conf import settings
-from django.contrib.auth.views import logout
+from django.contrib.auth import logout
 
 urlpatterns = [
     path('', views.index, name="index"),

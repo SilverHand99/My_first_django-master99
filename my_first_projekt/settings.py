@@ -120,16 +120,16 @@ USE_TZ = True
 
 STATICFILES_DIRS = [BASE_DIR / 'static/']
 STATIC_ROOT = 'my_projekt/static/'
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'my_projekt/media'
 
-ADMIN_MEDIA_PREFIX = '/static/admin/'
+ADMIN_MEDIA_PREFIX = 'static/admin/'
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
@@ -146,3 +146,4 @@ LOGOUT_REDIRECT_URL = '/'
 
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 django_heroku.settings(locals())
+INTERNAL_IPS = ('127.0.0.1', 'Localhost')
