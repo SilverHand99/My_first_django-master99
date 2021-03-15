@@ -148,13 +148,12 @@ class CartView(MasterView):
         response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id)))
         return response
 
-    def remove(self, cart_content, request):
+    def remove(self, request):
         if self.request.user.is_authenticated:
             try:
-                del cart_content.get.car
-            except ObjectDoesNotExist:
-                pass
-        else:
-            del request.cart_content
-
-            return redirect('cart.html')
+                car = Car.objects.get(id=request.POST.get('car_id'))
+                cart = self.get_cart()
+                cart_content, _ = CartContent.objects.get_or_create(cart=cart, product=car)
+                cart_content.delete()
+            except:
+                return redirect('cart.html')
