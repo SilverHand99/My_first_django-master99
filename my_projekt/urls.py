@@ -13,4 +13,5 @@ urlpatterns = [
     path('logout/', logout, {'next_page': settings.LOGOUT_REDIRECT_URL}, name='logout'),
     path('register/', views.oauth, name="register"),
     path('cart/', views.CartView.as_view(), name='cart'),
+    path('tesla_modelX/', views.index2, name='Model_X')
 ]

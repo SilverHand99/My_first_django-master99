@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .models import Car, CartContent, Cart
@@ -5,7 +6,10 @@ from .forms import SearchForm, LoginForm, RegisterForm
 from .models import Post
 from django.views import View
 from django.core.exceptions import ObjectDoesNotExist
-from django.views.generic import DeleteView, UpdateView
+from django.contrib.auth.models import User, Group
+from rest_framework import viewsets
+from rest_framework import permissions
+from api.restshop.Serializers import UserSerializer, GroupSerializer
 
 
 # Create your views here.
@@ -62,6 +66,10 @@ class MasterView(View):
 
 def index(request):
     return render(request, 'my_index.html')
+
+
+def index2(request):
+    return render(request, 'tesla_model_X.html')
 
 
 def log_in(request):
@@ -149,11 +157,30 @@ class CartView(MasterView):
         return response
 
     def remove(self, request):
-        if self.request.user.is_authenticated:
-            try:
-                car = Car.objects.get(id=request.POST.get('car_id'))
-                cart = self.get_cart()
-                cart_content, _ = CartContent.objects.get_or_create(cart=cart, product=car)
-                cart_content.delete()
-            except:
-                return redirect('cart.html')
+        cart = self.get_cart()
+        car = Car.objects.get(id=request.POST.get('car_id'))
+        cart_content = CartContent.objects.request(cart=cart, product=car)
+        cart = Cart(request.session)
+        if cart_content in cart:
+            cart_content.all().delete()
+        else:
+            pass
+            return redirect('cart.html')
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAuthenticated]
