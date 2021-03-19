@@ -17,7 +17,7 @@ class Category(models.Model):
 class Car(models.Model):
     image = models.ImageField(upload_to='images/', blank=True, verbose_name='Картинка')
     title = models.CharField(max_length=100, verbose_name='Название', help_text='введите название')
-    categories = models.ManyToManyField(Category, verbose_name='категория', )
+    categories = models.ManyToManyField(Category, verbose_name='категория', related_name='categories')
     description = models.CharField(max_length=500, verbose_name='Описание')
     price = models.PositiveIntegerField(verbose_name='цена')
 

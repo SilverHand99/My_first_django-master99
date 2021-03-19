@@ -156,31 +156,12 @@ class CartView(MasterView):
         response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id)))
         return response
 
-    def remove(self, request):
+    def remove(self, request, ):
         cart = self.get_cart()
-        car = Car.objects.get(id=request.POST.get('car_id'))
-        cart_content = CartContent.objects.request(cart=cart, product=car)
-        cart = Cart(request.session)
-        if cart_content in cart:
-            cart_content.all().delete()
-        else:
-            pass
-            return redirect('cart.html')
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
+        if self.request.user.is_authenticated:
+            try:
+                cart_records = CartContent.objects.filter(cart_id=cart.id)
+                if cart_records in cart:
+                    cart_records.delete()
+            except:
+                return render('cart.html', request)
