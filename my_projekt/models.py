@@ -48,8 +48,21 @@ class Cart(models.Model):
             total += item.product.price * item.qty
         return total
 
+    def get_cart_content(self):
+        return CartContent.objects.filter(cart=self.id)
+
 
 class CartContent(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product = models.ForeignKey(Car, on_delete=models.CASCADE)
     qty = models.PositiveIntegerField(null=True)
+
+
+class User_Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, verbose_name='аватарка')
+
+    # avatar
+    def __str__(self):
+        return self.user.username

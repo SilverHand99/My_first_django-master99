@@ -45,8 +45,13 @@
                 </form>
             </div>
     </div>
-    <div>
-         <a href="/cart">Корзина<span class="badge">{{ request.COOKIES.cart_count }}</span></a>
+    <div class="my_cart">
+         <a class="my_cart" href="/cart">Корзина<span class="badge">{{ request.COOKIES.cart_count }}</span></a>
+    </div>
+    <div class="row justify-content-sm-start mx-0 ">
+        {% for user_profile in user_profiles %}
+        <img class="w-50 h-50 avatar" src="{{ MEDIA_URL }}{{ user_profiles.avatars }}" alt="avatar image cap">
+        {% endfor %}
     </div>
         <div class="for_login">
             <div class=" nav-item col-8 text-end">

@@ -183,3 +183,17 @@ body{
   margin-top: 30px;
   background-color: transparent;
 }
+
+.avatar{
+    width: 25px;
+    height: 25px;
+    background-size: contain;
+    display: flex;
+}
+
+.my_cart{
+    animation: none;
+    display: block;
+    margin-top: 40%;
+    color: white;
+}

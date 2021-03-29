@@ -1,15 +1,11 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .models import Car, CartContent, Cart
+from .models import Car, CartContent, Cart, User_Profile
 from .forms import SearchForm, LoginForm, RegisterForm
 from .models import Post
 from django.views import View
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.models import User, Group
-from rest_framework import viewsets
-from rest_framework import permissions
-from api.restshop.Serializers import UserSerializer, GroupSerializer
 
 
 # Create your views here.
@@ -107,6 +103,7 @@ def register(request):
 
 
 def bay_a_car(request):
+    user_profiles = User_Profile.objects.all()
     all_cars = Car.objects.all()
     if request.method == 'POST':
         form = SearchForm(request.POST)
@@ -117,7 +114,7 @@ def bay_a_car(request):
         form = SearchForm()
 
     return render(request, 'bay_tesla_cars.html',
-                  {'cars': all_cars, 'form': form, 'user': request.user})
+                  {'cars': all_cars, 'form': form, 'user': request.user, 'user_profiles': user_profiles})
 
 
 def log_out(request):
@@ -156,12 +153,9 @@ class CartView(MasterView):
         response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id)))
         return response
 
-    def remove(self, request, ):
-        cart = self.get_cart()
-        if self.request.user.is_authenticated:
-            try:
-                cart_records = CartContent.objects.filter(cart_id=cart.id)
-                if cart_records in cart:
-                    cart_records.delete()
-            except:
-                return render('cart.html', request)
+
+def delete(self, request):
+    product = CartContent.objects.get(id=request.get('__all__'))
+    self.request.Cart.objects.get(product)
+    CartContent.objects.all().delete()
+    return redirect('cart.html')

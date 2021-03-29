@@ -2,9 +2,12 @@ from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
-from api.restshop.Serializers import UserSerializer, GroupSerializer, CarSerializer, CategorySerializer
-from my_projekt.models import Car, Category
+from api.restshop.Serializers import UserSerializer, GroupSerializer, CarSerializer, CategorySerializer, CartSerializer, \
+    CartContentSerializer, UserProfileSerializer
+from my_projekt.models import Car, Category, Cart, CartContent, User_Profile
 from rest_framework.views import APIView, Response
+from rest_framework import generics
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -36,3 +39,29 @@ class CarViewSet(viewsets.ModelViewSet):
 class CategorySet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+
+class CartSet(viewsets.ModelViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+
+
+class CartContentSet(viewsets.ModelViewSet):
+    queryset = CartContent.objects.all()
+    serializer_class = CartContentSerializer
+
+
+class UserProfileListCreateView(ListCreateAPIView):
+    queryset = User_Profile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)
+
+
+class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = User_Profile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
