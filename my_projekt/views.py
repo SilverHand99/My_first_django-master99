@@ -117,6 +117,11 @@ def bay_a_car(request):
                   {'cars': all_cars, 'form': form, 'user': request.user, 'user_profiles': user_profiles})
 
 
+def user_avatar(request):
+    avatars = User_Profile.objects.get(user=request.user)
+    return render(request, 'profile.html', {'avatars': avatars, })
+
+
 def log_out(request):
     logout(request)
     return redirect('/')

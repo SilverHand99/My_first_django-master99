@@ -217,3 +217,28 @@ body{
 .color_input{
     color: white;
 }
+
+.avatar{
+    width: 40px;
+    height: 40px;
+    background-size: contain;
+    display: flex;
+    position: absolute;
+    margin-left: 100px;
+}
+
+.my_cart{
+    animation: none;
+    display: block;
+    color: white;
+}
+
+.avatar2 {
+    position: center;
+}
+
+.my_conteiner{
+    width: 150px;
+    height: 100px;
+    margin: 10px;
+}

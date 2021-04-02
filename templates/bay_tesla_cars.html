@@ -45,14 +45,14 @@
                 </form>
             </div>
     </div>
-    <div class="my_cart">
+    <div class="my_conteiner">
          <a class="my_cart" href="/cart">Корзина<span class="badge">{{ request.COOKIES.cart_count }}</span></a>
     </div>
-    <div class="row justify-content-sm-start mx-0 ">
+        <div class="avatar">
         {% for user_profile in user_profiles %}
-        <img class="w-50 h-50 avatar" src="{{ MEDIA_URL }}{{ user_profiles.avatars }}" alt="avatar image cap">
+        <img class="avatar2" src="{{ MEDIA_URL }}{{ user_profile.avatar }}" alt="avatar image cap">
         {% endfor %}
-    </div>
+        </div>
         <div class="for_login">
             <div class=" nav-item col-8 text-end">
                 {% if user.is_authenticated %}
@@ -66,6 +66,7 @@
                 {% endif %}
             </div>
         </div>
+
     </header>
     <div class="row justify-content-sm-start mx-0 ">
         {% for car in cars %}

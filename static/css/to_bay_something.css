@@ -183,3 +183,32 @@ body{
   margin-top: 30px;
   background-color: transparent;
 }
+
+.avatar{
+    width: 70px;
+    height: 50px;
+    background-size: contain;
+    display: flex;
+    position: absolute;
+    margin-left: 79%;
+    margin-top: 5px;
+}
+
+.my_cart{
+    animation: none;
+    display: block;
+    color: white;
+    margin-top: 5px;
+}
+
+.avatar2 {
+    position: center;
+    width: 70px;
+    height: 50px;
+}
+
+.my_conteiner{
+    width: 150px;
+    height: 100px;
+    margin: 10px;
+}
