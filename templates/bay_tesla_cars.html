@@ -56,7 +56,7 @@
         <div class="for_login">
             <div class=" nav-item col-8 text-end">
                 {% if user.is_authenticated %}
-                    <span class="text"><a href="{% url 'change_profile' %}">
+                    <span class="text"><a class="color_input text-decoration-none" href="{% url 'change_profile' %}">
                         {{ user.get_username }}</a>| <a href="/logout" class="color_input text-decoration-none">Выйти</a>
                     </span>
                 {% else %}

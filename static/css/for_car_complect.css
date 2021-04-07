@@ -27,8 +27,9 @@
 }
 body{
   width: 100%;
-  height: 2800px;
+  height: 2000px;
   background-color: var(--background_color);
+    margin: 0;
 }
 .carusel{
   margin: 70px;
@@ -242,14 +243,11 @@ body{
     height: 100px;
     margin: 10px;
 }
-.tesla_img1{
-  background-image: var(--Footer_img);
-  height: var(--Footer_hight);
-  width: var(--Footer_width);
-  background-size: contain;
-  display: flex;
-  margin-top: 30px;
-  background-color: transparent;
+
+.complekt_body{
+    width: 450px;
+    height: 250px;
+    display: flex;
 }
 
 .tesla_footer{
@@ -266,4 +264,14 @@ body{
   margin-top: var(--to_footerTXT);
   display: flex;
   float: bottom;
+}
+
+.tesla_img1{
+  background-image: var(--Footer_img);
+  height: var(--Footer_hight);
+  width: var(--Footer_width);
+  background-size: contain;
+  display: flex;
+  margin-top: 30px;
+  background-color: transparent;
 }
