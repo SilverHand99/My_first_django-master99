@@ -66,3 +66,24 @@ class User_Profile(models.Model):
     # avatar
     def __str__(self):
         return self.user.username
+
+
+class Car_Complekt(models.Model):
+    items = models.ManyToManyField(Car, verbose_name='товары', related_name='cars')
+    sell = models.PositiveIntegerField(max_length=999, blank=True, default='')
+    total_cost = models.PositiveIntegerField()
+
+    def get_car(self):
+        self.short_description = "car"
+        return ', '.join([cat.title for cat in self.items.all()])
+
+    def __str__(self):
+        return str(self.id)
+
+    def get_total(self):
+        sell = Car_Complekt.sell
+        items = Car.objects.filter(Car_Complekt=self.id)
+        total = 0
+        for item in items:
+            total += item.product.price % 100 * sell
+        return total

@@ -50,14 +50,14 @@
     </div>
         <div class="avatar">
         {% for user_profile in user_profiles %}
-        <img class="avatar2" src="{{ MEDIA_URL }}{{ user_profile.avatar }}" alt="avatar image cap">
+        <img class="avatar2" src="{{ MEDIA_URL }}{{ user_profile.avatar }}" alt="">
         {% endfor %}
         </div>
         <div class="for_login">
             <div class=" nav-item col-8 text-end">
                 {% if user.is_authenticated %}
-                    <span class="text">
-                  {{ user.get_username }} | <a href="/logout" class="color_input text-decoration-none">Выйти</a>
+                    <span class="text"><a href="{% url 'change_profile' %}">
+                        {{ user.get_username }}</a>| <a href="/logout" class="color_input text-decoration-none">Выйти</a>
                     </span>
                 {% else %}
                     <span class="text text-decoration-none">

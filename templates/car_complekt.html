@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="card offset-2 col-3 mt-4 p-3 card-body">
+    {% for car_complekt in car_complekts %}
+сумма:{{ car_complekt.total_cost }}<br>
+товары:{{ car_complekt.items }}<br>
+    скидка:{{ car_complekt.sell }}<br>
+    {% endfor %}
+</div>
+</body>
+</html>

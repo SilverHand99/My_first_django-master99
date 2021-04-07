@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="post">
+    {% for user_profile in user_profiles %}
+    <img class="avatar2" src="{{ MEDIA_URL }}{{ user_profile.avatar }}" alt="">
+        <label>
+            <input type="text" href="{{ user_profile.description }}" class="form-control"/>
+        </label>
+        <h3>{{ user_profile.user }}</h3>
+    {% endfor %}
+</form>
+</body>
+</html>

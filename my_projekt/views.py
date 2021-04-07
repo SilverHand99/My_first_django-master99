@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .models import Car, CartContent, Cart, User_Profile
+from .models import Car, CartContent, Cart, User_Profile, Car_Complekt
 from .forms import SearchForm, LoginForm, RegisterForm
 from .models import Post
 from django.views import View
@@ -159,8 +159,21 @@ class CartView(MasterView):
         return response
 
 
-def delete(self, request):
-    product = CartContent.objects.get(id=request.get('__all__'))
-    self.request.Cart.objects.get(product)
-    CartContent.objects.all().delete()
-    return redirect('cart.html')
+class delete_content(MasterView):
+
+    def get(self, request):
+        cart = self.get_cart()
+        cart_records = self.get_cart_records(cart)
+        cart_records.delete()
+
+        return render(request, 'cart_delete.html')
+
+
+def change_profile(request):
+    return render(request, 'Change_profile.html')
+
+
+def car_complekt(request):
+    all_complekt = Car_Complekt.objects.all()
+
+    return render(request, 'car_complekt.html', {'car_complekts': all_complekt})

@@ -151,3 +151,17 @@ body{
   --for_txt_login: red;
     --for_button3: silver;
 }
+
+.color_input{
+    color: white;
+}
+
+.delete{
+    animation: none;
+    color: white;
+    margin-top: 100px;
+    margin-left: 50px;
+    width: 100px;
+    text-decoration: none;
+
+}

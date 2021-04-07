@@ -3,8 +3,8 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
 from api.restshop.Serializers import UserSerializer, GroupSerializer, CarSerializer, CategorySerializer, CartSerializer, \
-    CartContentSerializer, UserProfileSerializer
-from my_projekt.models import Car, Category, Cart, CartContent, User_Profile
+    CartContentSerializer, UserProfileSerializer, ComplektSerializer
+from my_projekt.models import Car, Category, Cart, CartContent, User_Profile, Car_Complekt
 from rest_framework.views import APIView, Response
 from rest_framework import generics
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
@@ -64,4 +64,10 @@ class UserProfileListCreateView(ListCreateAPIView):
 class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
     queryset = User_Profile.objects.all()
     serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class ComplektView(RetrieveUpdateDestroyAPIView):
+    queryset = Car_Complekt.objects.all()
+    serializer_class = ComplektSerializer
     permission_classes = [permissions.IsAuthenticated]

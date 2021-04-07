@@ -14,6 +14,8 @@ urlpatterns = [
     path('register/', views.oauth, name="register"),
     path('cart/', views.CartView.as_view(), name='cart'),
     path('tesla_modelX/', views.index2, name='Model_X'),
-    path('cart/', views.delete, name='delete'),
+    path('delete_cart/', views.delete_content.as_view(), name='delete'),
     path('profile/', views.user_avatar, name='avatars'),
+    path('change_profile/', views.change_profile, name='change_profile'),
+    path('complekt/', views.car_complekt, name='complekt')
 ]

@@ -17,4 +17,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path("all-profiles/", views.UserProfileListCreateView.as_view(), name="all-profiles"),
     path("profile/<int:pk>", views.UserProfileDetailView.as_view(), name="profile"),
+    path('complect/<int:pk>', views.ComplektView.as_view(), name='Complekt')
 ]
