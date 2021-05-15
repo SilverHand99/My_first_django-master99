@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'my_projekt',
+    'my_projekt.apps.MyProjektConfig',
     'social_django',
     'api.restshop',
     'rest_framework'

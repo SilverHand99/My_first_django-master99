@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from my_projekt.models import User_Profile
 
 
 class RegisterForm(UserCreationForm):
@@ -22,3 +23,15 @@ class LoginForm(forms.Form):
 
 class SearchForm(forms.Form):
     search = forms.CharField(required=False, label='', )
+
+
+class EditForm(forms.Form):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name')
+
+
+class ProfileChange(forms.ModelForm):
+    class Meta:
+        model = User_Profile
+        fields = ('location', 'avatar', 'description', 'user')

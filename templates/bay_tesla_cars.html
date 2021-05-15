@@ -19,84 +19,104 @@
     <script src="/static/js/bay_a_car.js"></script>
 </head>
 <body>
-    <header class="header">
-        <div id="mySidenav" class="sidenav">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a href="{% url 'index' %}">Tesla model S</a>
-            <a href="{% url 'Model_X' %}">Tesla model X</a>
-            <a href="#">Tesla model 3</a>
-            <a href="#">Tesla model Y</a>
-            <a href="#">Tesla cyber-track</a>
-            <a href="#">Tesla Roadster</a>
-            <a href="#">Bay something</a>
-        </div>
-        <div id="main" onclick="openNav()">
-            <button class="for_button3">☰</button>
-        </div>
-        <button class="icon"></button>
-        <h2 class="for_header">Tesla Shop</h2>
+<header class="header">
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="{% url 'index' %}">Tesla model S</a>
+        <a href="{% url 'Model_X' %}">Tesla model X</a>
+        <a href="#">Tesla model 3</a>
+        <a href="#">Tesla model Y</a>
+        <a href="#">Tesla cyber-track</a>
+        <a href="#">Tesla Roadster</a>
+        <a href="#">Bay something</a>
+    </div>
+    <div id="main" onclick="openNav()">
+        <button class="for_button3">☰</button>
+    </div>
+    <button class="icon"></button>
+    <h2 class="for_header">Tesla Shop</h2>
     <div class='to_search'>
-             <div class="nav-item active col-3">
-                <form class="form-inline my-2 my-lg-0" method="post">
-                    {% csrf_token %}
-                    {{ form }}
-                    <label for="submit_search" class="button"></label>
-                    <input id="submit_search" type="submit" hidden>
-                </form>
-            </div>
+        <div class="nav-item active col-3">
+            <form class="form-inline my-2 my-lg-0" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <label for="submit_search" class="button"></label>
+                <input id="submit_search" type="submit" hidden>
+            </form>
+        </div>
     </div>
     <div class="my_conteiner">
-         <a class="my_cart" href="/cart">Корзина<span class="badge">{{ request.COOKIES.cart_count }}</span></a>
+        <a class="my_cart" href="/cart">Корзина<span class="badge">{{ request.COOKIES.cart_count }}</span></a>
     </div>
-        <div class="avatar">
+    <div class="avatar">
         {% for user_profile in user_profiles %}
-        <img class="avatar2" src="{{ MEDIA_URL }}{{ user_profile.avatar }}" alt="">
-        {% endfor %}
-        </div>
-        <div class="for_login">
-            <div class=" nav-item col-8 text-end">
-                {% if user.is_authenticated %}
-                    <span class="text"><a class="color_input text-decoration-none" href="{% url 'change_profile' %}">
-                        {{ user.get_username }}</a>| <a href="/logout" class="color_input text-decoration-none">Выйти</a>
-                    </span>
-                {% else %}
-                    <span class="text text-decoration-none">
-                    <a href="/register" class="text-decoration-none color_input">Регистрация</a> | <a href="/login" class="text-decoration-none color_input">Войти</a>
-                    </span>
-                {% endif %}
-            </div>
-        </div>
-
-    </header>
-    <div class="row justify-content-sm-start mx-0 ">
-        {% for car in cars %}
-            <div class="card offset-2 col-3 mt-4 p-3">
-                <img class="card-img w-100 h-100" src="{{ MEDIA_URL }}{{ car.image }}" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">{{ car.title }}</h5>
-                    <p class="">{{ car.description }}</p>
-                    <a href="{{ index }}" class="btn btn-primary">Перейти к машине</a>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">цена: {{ car.price }}</li>
-                    <li class="list-group-item">категории: {{ car.get_categories }}</li>
-                </ul>
-            <form action="/cart/" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="car_id" value="{{ car.id }}">
-                    <label>
-                        <input type="number" name="qty" value="{{ car.id }}">
-                    </label>
-                    <button type="submit">Добавить в корзину</button>
-                </form>
-            </div>
+            <img class="avatar2" src="{{ MEDIA_URL }}{{ user_profile.avatar }}" alt="">
         {% endfor %}
     </div>
+    <div class="for_login">
+        <div class=" nav-item col-8 text-end">
+            {% if user.is_authenticated %}
+                <span class="text"><a class="color_input text-decoration-none" href="{% url 'change_profile' %}">
+                        {{ user.get_username }}</a>| <a href="/logout"
+                                                        class="color_input text-decoration-none">Выйти</a>
+                    </span>
+            {% else %}
+                <span class="text text-decoration-none">
+                    <a href="/register" class="text-decoration-none color_input">Регистрация</a> | <a href="/login"
+                                                                                                      class="text-decoration-none color_input">Войти</a>
+                    </span>
+            {% endif %}
+        </div>
+    </div>
+
+</header>
+<div class="row justify-content-sm-start mx-0 ">
+    {% for car in cars %}
+        <div class="card offset-2 col-3 mt-4 p-3">
+            <img class="card-img w-100 h-100" src="{{ MEDIA_URL }}{{ car.image }}" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">{{ car.title }}</h5>
+                <p class="">{{ car.description }}</p>
+                <a href="{{ index }}" class="btn btn-primary">Перейти к машине</a>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">цена: {{ car.price }}</li>
+                <li class="list-group-item">категории: {{ car.get_categories }}</li>
+            </ul>
+            <form action="/cart/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="car_id" value="{{ car.id }}">
+                <label>
+                    <input type="number" name="qty" value="{{ car.id }}">
+                </label>
+                <button type="submit">Добавить в корзину</button>
+            </form>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <button class="btn btn-dark" type="submit"><a href="?page=1">&laquo; first</a></button>
+            <button type="submit"><a href="?page={{ page_obj.previous_page_number }}">previous</a></button>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <button type="submit"><a href="?page={{ page_obj.next_page_number }}">next</a></button>
+            <button type="submit"><a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></button>
+        {% endif %}
+    </span>
+</div>
 <footer class="tesla_footer">
-  <div class="">
-   <div class="tesla_img1"></div>
-    <h3 class="to_footer">&copy; Ibrahim Nurudinovich</h3>
-  </div>
+    <div class="">
+        <div class="tesla_img1"></div>
+        <h3 class="to_footer">&copy; Ibrahim Nurudinovich</h3>
+    </div>
 </footer>
 </body>
 </html>

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from my_projekt.models import Car, Category, Cart, CartContent, User_Profile, Car_Complekt
+from my_projekt.models import Car, Category, Cart, CartContent, User_Profile, Car_Complekt, Company
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,13 +21,16 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['description', 'title', 'id']
 
 
-class CarSerializer(serializers.HyperlinkedModelSerializer):
-    categories = CategorySerializer(many=True)
-    depth = 2
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = '__all__'
 
+
+class CarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car
-        fields = ['url', 'title', 'price', 'description', 'categories', 'id']
+        fields = '__all__'
 
     def create(self, validated_data):
         categories = validated_data.pop("categories", [])
@@ -101,3 +104,5 @@ class ComplektSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car_Complekt
         fields = '__all__'
+
+

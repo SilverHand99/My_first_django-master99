@@ -3,12 +3,13 @@ from rest_framework import routers
 from api.restshop import views
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
+router.register(r'users', views.UserViewSet,)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'cars', views.CarViewSet, basename='car')
 router.register(r'categories', views.CategorySet, basename='Category')
 router.register(r'CartContent', views.CartContentSet)
 router.register(r'cart', views.CartSet)
+router.register(r'company', views.CompanySet, basename='company')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

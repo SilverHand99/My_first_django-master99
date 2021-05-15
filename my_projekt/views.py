@@ -1,17 +1,36 @@
 from django.conf import settings
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .models import Car, CartContent, Cart, User_Profile, Car_Complekt
-from .forms import SearchForm, LoginForm, RegisterForm
+from .forms import SearchForm, LoginForm, RegisterForm, ProfileChange
 from .models import Post
 from django.views import View
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.generic import ListView
+from django.core.paginator import Paginator
+from my_projekt.models import Car
+
+
+class ContactListView(ListView):
+    paginate_by = 2
+    model = Car
+
+
+def listing(request):
+    contact_list = Car.objects.all()
+    paginator = Paginator(contact_list, 25) # Show 25 contacts per page.
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'car_list.html', {'page_obj': page_obj})
 
 
 # Create your views here.
+
 class MasterView(View):
 
-    def get_cart_records(self, cart=None, response=None):
+    def get_cart_records(self, cart=None, response=None,):
         cart = self.get_cart() if cart is None else cart
         if cart is not None:
             cart_records = CartContent.objects.filter(cart_id=cart.id)
@@ -24,7 +43,7 @@ class MasterView(View):
 
         return cart_records
 
-    def get_cart(self, update_quantity=False):
+    def get_cart(self):
         if self.request.user.is_authenticated:
             user_id = self.request.user.id
             try:
@@ -102,19 +121,32 @@ def register(request):
     return render(request, 'login.html', {'form': form})
 
 
-def bay_a_car(request):
+class bay_a_car(MasterView):
     user_profiles = User_Profile.objects.all()
     all_cars = Car.objects.all()
-    if request.method == 'POST':
+
+    def get(self, request):
+        user_profiles = User_Profile.objects.all()
+        paginator = Paginator(self.all_cars, 4)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        form = SearchForm()
+
+        return render(request, 'bay_tesla_cars.html',
+                      {'cars': page_obj, 'form': form, 'user': request.user, 'user_profiles': user_profiles,
+                       'page_obj': page_obj})
+
+    def post(self, request):
+        user_profiles = User_Profile.objects.all()
+        all_cars = Car.objects.all()
         form = SearchForm(request.POST)
         search = request.POST.get('search')
         if form.is_valid() and search:
             all_cars = all_cars.filter(title__contains=search)
-    else:
-        form = SearchForm()
+        else:
+            form = SearchForm()
 
-    return render(request, 'bay_tesla_cars.html',
-                  {'cars': all_cars, 'form': form, 'user': request.user, 'user_profiles': user_profiles})
+        return render(request, 'bay_tesla_cars.html', {'cars': all_cars, 'form': form, 'user': request.user, 'user_profiles': user_profiles})
 
 
 def user_avatar(request):
@@ -148,7 +180,7 @@ class CartView(MasterView):
         }
         return render(request, 'cart.html', context)
 
-    def post(self, request):
+    def post(self, request, update_quantity=True):
         car = Car.objects.get(id=request.POST.get('car_id'))
         cart = self.get_cart()
         quantity = request.POST.get('qty')
@@ -160,7 +192,6 @@ class CartView(MasterView):
 
 
 class delete_content(MasterView):
-
     def get(self, request):
         cart = self.get_cart()
         cart_records = self.get_cart_records(cart)
@@ -170,7 +201,18 @@ class delete_content(MasterView):
 
 
 def change_profile(request):
-    return render(request, 'Change_profile.html')
+    if request.method == 'POST':
+        form = ProfileChange(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = True
+            user.save()
+            login(request, user)
+            return redirect('Change_profile.html')
+    else:
+        form = ProfileChange()
+
+    return render(request, 'Change_profile.html', {'form': form})
 
 
 def car_complekt(request):

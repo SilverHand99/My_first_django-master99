@@ -1,18 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="/static/css/change_profile.css" rel="stylesheet">
 </head>
 <body>
-<form method="post">
-    {% for user_profile in user_profiles %}
-    <img class="avatar2" src="{{ MEDIA_URL }}{{ user_profile.avatar }}" alt="">
-        <label>
-            <input type="text" href="{{ user_profile.description }}" class="form-control"/>
-        </label>
-        <h3>{{ user_profile.user }}</h3>
-    {% endfor %}
-</form>
+<header class="header">
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="{% url 'index' %}">Tesla</a>
+            <a href='{% url 'Model_X' %}'>Tesla model X</a>
+            <a href="#">Tesla model 3</a>
+            <a href="#">Tesla model Y</a>
+            <a href="#">Tesla cyber-track</a>
+            <a href="#">Tesla Roadster</a>
+            <a href="{% url 'bay' %}">Bay something</a>
+        </div>
+        <div id="main" onclick="openNav()">
+            <button class="for_button3">☰</button>
+        </div>
+        <button class="icon"></button>
+        <h2 class="for_header">Tesla</h2>
+          <div class="for_login">
+            <div class=" nav-item col-8 text-end">
+                {% if user.is_authenticated %}
+                    <span class="text">
+                  {{ user.get_username }} | <a href="/logout" class="color_input text-decoration-none">Выйти</a>
+                    </span>
+                {% else %}
+                    <span class="text text-decoration-none">
+                    <a href="/register" class="text-decoration-none color_input">Регистрация</a> | <a href="/login" class="text-decoration-none color_input">Войти</a>
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+<div class="row justify-content-sm-start mx-0 ">
+    <div class="card offset-2 col-2 mt-2 p-2">
+    <div class="card-body complekt_body">
+        <section class="login">
+    <form method="post">
+        {% csrf_token %}
+       <img class="avatar2" src="{{ MEDIA_URL }}{{ user_profile.avatar }}" alt="">
+        {{ form.as_p }}
+           <button class="for_button3" type="submit">Accept</button>
+        {{ user }}
+    </form>
+    </section>
+    </div>
+    </div>
+</div>
+<footer class="tesla_footer">
+  <div class="">
+   <div class="tesla_img1"></div>
+    <h3 class="to_footer">&copy; Ibrahim Nurudinovich</h3>
+  </div>
+</footer>
 </body>
 </html>
+<script src="/static/js/my_java.js" defer></script>
