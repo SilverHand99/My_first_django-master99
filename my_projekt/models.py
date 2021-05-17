@@ -79,7 +79,7 @@ class Location(models.Model):
 class User_Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
-    avatar = models.ImageField(upload_to='avatars/', blank=True, verbose_name='аватарка', default='avatars/avatar.jpg')
+    avatar = models.ImageField(upload_to='avatars/', blank=True, verbose_name='аватарка')
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
 
     # avatar

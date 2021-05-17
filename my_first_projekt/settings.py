@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'my_projekt.apps.MyProjektConfig',
     'social_django',
     'api.restshop',
-    'rest_framework'
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

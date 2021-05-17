@@ -49,34 +49,42 @@ class TestCategory(TestCase):
 
 
 class TestCar(TestCase):
+    def setUp(self):
+        Company.objects.create(title='title')
+        Category.objects.create(title='wddwd', description='dwdwd')
+
     def test_create_car(self):
+        categories = Category.objects.get(id=1)
+        company = Company.objects.get(id=1)
         payload = {
             'title': 'electro car',
             'description': 'dawdasdw',
             'price': 3412341,
+            'categories': [categories],
+            'company': company,
         }
         car = Car.objects.create(**payload)
-        self.assertEqual(car.description, payload['title', 'description', 'price'])
+        self.assertEqual(car.description, payload['description'])
 
 
-# class CarTest(TestCase):
-#     def setUp(self):
-#         car = Car.objects.create(title='Tesla', description='car')
-#
-#     def tearDown(self):
-#         pass
-#
-#     @classmethod
-#     def setUpTestData(cls):
-#         category = Category.objects.create(description='elecrtro_car')
-#
-#     def test_something(self):
-#         car = Car.objects.get(id=1)
-#         category = Category.objects.get(id=1)
-#         field_label = Category._meta.get_field('description').verbose_name
-#         self.assertEqual(field_label, 'description')
+class TestCompany(TestCase):
+    def create_company(self):
+        payload = {
+            'title': 'wdwdwd'
+        }
+        company = Company.objects.create(**payload)
+        self.assertEqual(company.title, payload['title'])
 
-
+    def test_company_update(self):
+        company_title = 'title'
+        payload = {
+            'title': 'company_title'
+        }
+        company = Company.objects.create(**payload)
+        company.title = company_title
+        company.save()
+        company.refresh_from_db()
+        self.assertEqual(company.title, company_title)
 
 
 
