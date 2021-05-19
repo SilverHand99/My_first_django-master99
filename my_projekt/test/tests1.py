@@ -1,5 +1,5 @@
 from django.test import TestCase
-from my_projekt.models import Category, Company, Car
+from my_projekt.models import Category, Company, Car, Cart, CartContent, User_Profile, User
 
 
 class TestCategory(TestCase):
@@ -49,9 +49,10 @@ class TestCategory(TestCase):
 
 
 class TestCar(TestCase):
-    def setUp(self):
-        Company.objects.create(title='title')
-        Category.objects.create(title='wddwd', description='dwdwd')
+    @classmethod
+    def setUpTestData(cls):
+        Category.objects.create(title='dwdwd', description='dwdwdwd')
+        Company.objects.create(title='dwdwdw')
 
     def test_create_car(self):
         categories = Category.objects.get(id=1)
@@ -60,10 +61,14 @@ class TestCar(TestCase):
             'title': 'electro car',
             'description': 'dawdasdw',
             'price': 3412341,
-            'categories': [categories],
-            'company': company,
+            'categories': [categories.id],
+            'company': company.id,
         }
         car = Car.objects.create(**payload)
+        company_objects_for_car = Company.objects.all()
+        car.company.set(company_objects_for_car)  # Присвоение типов many-to-many напрямую недопустимо
+        car.save()
+
         self.assertEqual(car.description, payload['description'])
 
 
@@ -86,5 +91,24 @@ class TestCompany(TestCase):
         company.refresh_from_db()
         self.assertEqual(company.title, company_title)
 
+    def test_delete_company(self):
+        payload = {
+            'title': 'title123',
+        }
+        company = Company.objects.create(**payload)
+        pk = company.pk
+        company.delete()
+        with self.assertRaises(Company.DoesNotExist):
+            company = Company.objects.get(pk=pk)
 
 
+class UserProfileTest(TestCase):
+
+    def test_create_user(self):
+        user = User.objects.create_superuser(username='Add123', password='12.34.54.56', id=1)
+        payload = {
+            'user': user.id,
+            'description': 'dwdwdwd',
+        }
+        user_profile = User_Profile.objects.create(**payload)
+        self.assertEqual(user_profile.description, payload['description'])

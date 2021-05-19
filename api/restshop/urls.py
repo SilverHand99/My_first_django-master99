@@ -1,6 +1,10 @@
 from django.urls import include, path
 from rest_framework import routers
+
+import user.api.urls
 from api.restshop import views
+from api.restshop.views import RegisterView
+
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet,)
@@ -18,5 +22,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path("all-profiles/", views.UserProfileListCreateView.as_view(), name="all-profiles"),
     path("profile/<int:pk>", views.UserProfileDetailView.as_view(), name="profile"),
-    path('complect/<int:pk>', views.ComplektView.as_view(), name='Complekt')
+    path('complect/<int:pk>', views.ComplektView.as_view(), name='Complekt'),
+    path('register', RegisterView.as_view()),
 ]
