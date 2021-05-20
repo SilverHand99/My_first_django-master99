@@ -64,13 +64,13 @@ class UserProfileListCreateView(ListCreateAPIView):
         serializer.save(user=user)
 
 
-class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
+class UserProfileDetailView(viewsets.ModelViewSet):
     queryset = User_Profile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
-class ComplektView(RetrieveUpdateDestroyAPIView):
+class ComplektViewSet(viewsets.ModelViewSet):
     queryset = Car_Complekt.objects.all()
     serializer_class = ComplektSerializer
     permission_classes = [permissions.IsAuthenticated]

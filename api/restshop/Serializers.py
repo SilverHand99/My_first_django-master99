@@ -91,7 +91,7 @@ class CartSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+    user = UserSerializer()
 
     class Meta:
         model = User_Profile
@@ -100,13 +100,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class ComplektSerializer(serializers.ModelSerializer):
     items = CarSerializer(many=True)
+    depth = 1
 
     class Meta:
         model = Car_Complekt
         fields = '__all__'
 
 
-class UserRegisterSerializer(serializers.ModelSerializer):
+class UserRegisterSerializer(serializers.HyperlinkedModelSerializer):
 
     password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
 

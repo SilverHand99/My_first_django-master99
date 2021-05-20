@@ -12,6 +12,8 @@ router.register(r'categories', views.CategorySet, basename='Category')
 router.register(r'CartContent', views.CartContentSet)
 router.register(r'cart', views.CartSet)
 router.register(r'company', views.CompanySet, basename='company')
+router.register(r'kit', views.ComplektViewSet, basename='kit')
+router.register(r'profile', views.UserProfileDetailView, basename='profile')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
@@ -19,7 +21,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path("all-profiles/", views.UserProfileListCreateView.as_view(), name="all-profiles"),
-    path("profile/<int:pk>", views.UserProfileDetailView.as_view(), name="profile"),
-    path('complect/<int:pk>', views.ComplektView.as_view(), name='Complekt'),
     path('register', RegisterView.as_view()),
 ]

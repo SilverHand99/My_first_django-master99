@@ -1,6 +1,6 @@
 from rest_framework.test import APIRequestFactory
 from rest_framework import status
-from my_projekt.models import Car, Category, Company
+from my_projekt.models import Car, Category, Company, User_Profile, Car_Complekt, Location
 from my_projekt.models import User
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
@@ -64,17 +64,18 @@ class AccountTests(APITestCase):
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_change_account(self):
-        self.client.login(username='Add12', password='16.10.1999.122', email='sdwddsd@dwd.swd')
-        user = User.objects.create_user(username='Add1sd', password='16.10.1999.122', email='sdwddsddwd@dwd.swd', id=10)
-        url = '/api/users/10/'
-        data = {'username': 'Dadsdd122',
-                'email': 'dwwdw@dwd.cdw',
-                'password': '16.10.1999.122',
-                }
-        response = self.client.put(data, url, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(User.objects.get(id="1").username, data['username'])
+    # def test_change_account(self):
+    #     self.client.login(username='Add12', password='16.10.1999.122', email='sdwddsd@dwd.swd')
+    #     user = User.objects.create_user(username='Add1sd', password='16.10.1999.122', email='sdwddsddwd@dwd.swd', id=3)
+    #     user.save()
+    #     url = '/api/users/user.id/'
+    #     data = {'username': 'Dadsdd122',
+    #             'email': 'dwwdw@dwd.cdw',
+    #             'password': '16.10.1999.122',
+    #             }
+    #     self.client.put(data, url, format='json')
+    #     user.refresh_from_db()
+    #     self.assertEqual(user.email, data['email'])
 
 
 class CarTests(APITestCase):
@@ -195,6 +196,18 @@ class CompanyTest(APITestCase):
             company = Company.objects.get(pk=pk)
 
 
-class CartTest(APITestCase):
+class ProfileTest(APITestCase):
     def setUp(self):
         self.user = User.objects.create_superuser(username='Add2324', password='16.10.1999.9999')
+
+    def test_create_user_profile(self):
+        self.client.login(username='Add2324', password='16.10.1999.9999')
+        user = User.objects.create_user(username='Wdwdwd12', password='16.10.1999.9999')
+        location = Location.objects.create(country='Japan')
+        url = (reverse('profile-list'))
+        data = {'description': 'Tesla_1234',
+                'user': user.id,
+                'location': location.id}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(User_Profile.objects.count(), 1)
