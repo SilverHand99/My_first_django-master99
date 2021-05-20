@@ -2,9 +2,9 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .models import Car, CartContent, Cart, User_Profile, Car_Complekt
-from .forms import SearchForm, LoginForm, RegisterForm, ProfileChange
-from .models import Post
+from my_projekt.models import Car, CartContent, Cart, User_Profile, Car_Complekt
+from my_projekt.forms import SearchForm, LoginForm, RegisterForm, ProfileChange
+from my_projekt.models import Post
 from django.views import View
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import ListView
@@ -19,7 +19,7 @@ class ContactListView(ListView):
 
 def listing(request):
     contact_list = Car.objects.all()
-    paginator = Paginator(contact_list, 25) # Show 25 contacts per page.
+    paginator = Paginator(contact_list, 25)  # Show 25 contacts per page.
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -30,7 +30,7 @@ def listing(request):
 
 class MasterView(View):
 
-    def get_cart_records(self, cart=None, response=None,):
+    def get_cart_records(self, cart=None, response=None, ):
         cart = self.get_cart() if cart is None else cart
         if cart is not None:
             cart_records = CartContent.objects.filter(cart_id=cart.id)
@@ -65,17 +65,6 @@ class MasterView(View):
                             total_cost=0)
                 cart.save()
 
-            if self.request.user.is_authenticated:
-                try:
-                    cart = Cart.objects.get(session_key=session_key,
-                                            total_cost=0)
-                    cart.save()
-
-                except ObjectDoesNotExist:
-                    cart = Cart(session_key=session_key,
-                                total_cost=0)
-                    cart.save()
-
         return cart
 
 
@@ -96,7 +85,9 @@ def log_in(request):
             user = authenticate(username=username, password=password)
             if user:
                 login(request, user)
-                return redirect('/')
+                response = redirect('/')
+                response.delete_cookie('cart_count')
+                return response
             else:
                 form.add_error('login', 'Bad login or password')
                 form.add_error('password', 'Bad login or password')
@@ -126,18 +117,17 @@ class bay_a_car(MasterView):
     all_cars = Car.objects.all()
 
     def get(self, request):
-        user_profiles = User_Profile.objects.all()
+        # avatars = User_Profile.objects.get(user=request.user)
         paginator = Paginator(self.all_cars, 4)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         form = SearchForm()
-
         return render(request, 'bay_tesla_cars.html',
-                      {'cars': page_obj, 'form': form, 'user': request.user, 'user_profiles': user_profiles,
+                      {'cars': page_obj, 'form': form, 'user': request.user,  # 'avatars': avatars,
                        'page_obj': page_obj})
 
     def post(self, request):
-        user_profiles = User_Profile.objects.all()
+        # avatars = User_Profile.objects.get(user=request.user)
         all_cars = Car.objects.all()
         form = SearchForm(request.POST)
         search = request.POST.get('search')
@@ -146,7 +136,8 @@ class bay_a_car(MasterView):
         else:
             form = SearchForm()
 
-        return render(request, 'bay_tesla_cars.html', {'cars': all_cars, 'form': form, 'user': request.user, 'user_profiles': user_profiles})
+        return render(request, 'bay_tesla_cars.html', {'cars': all_cars, 'form': form,  # 'avatars': avatars,
+                                                       'user': request.user})
 
 
 def user_avatar(request):
@@ -156,7 +147,9 @@ def user_avatar(request):
 
 def log_out(request):
     logout(request)
-    return redirect('/')
+    response = redirect('/')
+    response.delete_cookie('cart_count')
+    return response
 
 
 def oauth(request):

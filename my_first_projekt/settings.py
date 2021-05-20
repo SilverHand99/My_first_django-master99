@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'social_django',
     'api.restshop',
     'rest_framework',
-    'user.api',
 ]
 
 MIDDLEWARE = [

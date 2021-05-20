@@ -1,7 +1,5 @@
 from django.urls import include, path
 from rest_framework import routers
-
-import user.api.urls
 from api.restshop import views
 from api.restshop.views import RegisterView
 
