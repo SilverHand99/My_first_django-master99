@@ -4,6 +4,7 @@ from my_projekt.models import Car, Category, Company, User_Profile, Car_Complekt
 from my_projekt.models import User
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
+import requests
 
 
 class CategoryTests(APITestCase):
@@ -56,7 +57,8 @@ class CategoryTests(APITestCase):
 class AccountTests(APITestCase):
 
     def setUp(self):
-        self.user = User.objects.create_superuser(username='Add12', password='16.10.1999.122', email='sdwddsd@dwd.swd',)
+        self.user = User.objects.create_superuser(username='Add12', password='16.10.1999.122',
+                                                  email='sdwddsd@dwd.swd', )
 
     def test_create_account(self):
         self.client.login(username='Add12', password='16.10.1999.122', email='sdwddsd@dwd.swd')
@@ -87,7 +89,7 @@ class CarTests(APITestCase):
         self.client.login(username='Add234', password='16.10.1999.999')
         category = Category.objects.create(description='sdsdwd', title='sdwdwd')
         company = Company.objects.create(title='sdwdwd')
-        url = reverse('car-list',)
+        url = reverse('car-list', )
         data = {'description': 'Tesla_X',
                 'title': 'electro_car',
                 'price': 123421,
@@ -110,7 +112,7 @@ class CarTests(APITestCase):
                 'title': 'electro_car',
                 'price': 123421,
                 'category': [categories.id],
-                'company': company.id,}
+                'company': company.id, }
         response = self.client.put(url, data, format='json')
         car.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -124,9 +126,9 @@ class CarTests(APITestCase):
         Car.objects.create(title='1231231', description='sdwdsdw', price=121312, company=company)
         url = '/api/cars/1/'
         data = {
-                'price': 345346,
-                'category': [category.id],
-                }
+            'price': 345346,
+            'category': [category.id],
+        }
         response = self.client.patch(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Car.objects.count(), 1)
@@ -136,7 +138,7 @@ class CarTests(APITestCase):
         self.client.login(username='Add234', password='16.10.1999.999')
         category = Category.objects.create(description='sdsdwd', title='sdwdwd')
         company = Company.objects.create(title='sdwdwd')
-        url = reverse('car-list',)
+        url = reverse('car-list', )
         data = {'description': 'Tesla_X',
                 'title': 'electro_car',
                 'price': 123421,
@@ -206,8 +208,54 @@ class ProfileTest(APITestCase):
         location = Location.objects.create(country='Japan')
         url = (reverse('profile-list'))
         data = {'description': 'Tesla_1234',
-                'user': user.id,
+                'user': [user.id],
                 'location': location.id}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User_Profile.objects.count(), 1)
+
+
+class TestKit(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_superuser(username='Add234', password='16.10.1999.999')
+
+    def test_create_kit(self):
+        self.client.login(username='Add234', password='16.10.1999.999')
+        company = Company.objects.create(title='zxczxc')
+        categories = Category.objects.create(description='dwdwd', title='sdwdwd')
+        car = Car.objects.create(title='1231231', description='sdwdsdw', price=121312, company=company)
+        car.categories.add(categories.id)
+        car.save()
+        url = reverse('kit-list')
+        data = {'sell': 15,
+                'total_after': 2141350,
+                'total_before': 1234210,
+                'items': [car.id],
+                }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Car.objects.count(), 1)
+
+
+class TestLoginApi(APITestCase):
+    profile_list_url = reverse('all-profiles')
+
+    def setUp(self):
+        self.user = User.objects.create_superuser(username='Add234', password='16.10.1999.999')
+
+    def test_login(self):
+        url = '/api/api-auth/login/'
+        data = {'username': 'Add234',
+                'password': '16.10.1999.999'
+                }
+        response = self.client.post(url, data, format='json')
+        self.token = response.data['access']
+        self.api_authentication()
+
+    def api_authentication(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
+
+    def test_userprofile_list_authenticated(self):
+        self.client.login(username='Add234', password='16.10.1999.999')
+        response = self.client.get(self.profile_list_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

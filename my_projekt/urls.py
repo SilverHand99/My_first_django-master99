@@ -2,6 +2,7 @@ from django.urls import path, include
 from my_projekt import views
 from django.conf import settings
 from django.contrib.auth import logout
+from my_projekt import translation
 
 urlpatterns = [
     path('', views.index, name="index"),
@@ -18,5 +19,6 @@ urlpatterns = [
     path('profile/', views.user_avatar, name='avatars'),
     path('change_profile/', views.change_profile, name='change_profile'),
     path('complekt/', views.car_complekt, name='complekt'),
-    path('car_pagination/', views.ContactListView, name='pagination')
+    path('car_pagination/', views.ContactListView, name='pagination'),
+    path('i18n/', translation.set_language, name='set_language')
 ]

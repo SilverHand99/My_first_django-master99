@@ -1,5 +1,5 @@
 from django.test import TestCase
-from my_projekt.models import Category, Company, Car, Cart, CartContent, User_Profile, User
+from my_projekt.models import Category, Company, Car, Cart, CartContent, User_Profile, User, Location
 
 
 class TestCategory(TestCase):
@@ -104,11 +104,13 @@ class TestCompany(TestCase):
 
 class UserProfileTest(TestCase):
 
-    def test_create_user(self):
+    def test_create_user(self, instance):
         user = User.objects.create_superuser(username='Add123', password='12.34.54.56', id=1)
+        location = Location.objects.create(country='russia')
         payload = {
-            'user': user.id,
+            'user': [user.id],
             'description': 'dwdwdwd',
+            'location': location.id
         }
-        user_profile = User_Profile.objects.create(**payload)
+        user_profile = User_Profile.objects.create(**payload, user=instance)
         self.assertEqual(user_profile.description, payload['description'])

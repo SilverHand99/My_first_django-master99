@@ -78,9 +78,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-           'rest_framework.authentication.BasicAuthentication',
-           'rest_framework.authentication.SessionAuthentication',
-           'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 
@@ -117,7 +117,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
+MODElTRANSLATION_TRANSLATION_REGISTRY = 'my_projekt.translation'
+TRANSLATION_REGISTRY = 'my_projekt.translation'
+ugettext = lambda s: s
+LANGUAGES = (
+    ('ru', ugettext(u'Russian')),
+    ('en', ugettext(u'English')),
+)
 
 TIME_ZONE = 'UTC'
 

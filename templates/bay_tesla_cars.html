@@ -116,6 +116,12 @@
         <div class="tesla_img1"></div>
         <h3 class="to_footer">&copy; Ibrahim Nurudinovich</h3>
     </div>
+    <form action="{% url 'set_language' %}" method="get">
+        {% csrf_token %}
+        <input name="lang" type="hidden" value="{{ request.get_full_path|slice:'3:' }}"/>
+        <input name="language" type="submit" value="en"/>
+        <input type="submit" value="ru">
+    </form>
 </footer>
 </body>
 </html>

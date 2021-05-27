@@ -31,6 +31,7 @@ class Car(models.Model):
     description = models.CharField(max_length=500, verbose_name='Описание')
     price = models.PositiveIntegerField(verbose_name='цена')
     company = models.ForeignKey(Company,  verbose_name='компания', on_delete=models.SET_NULL, null=True,)
+    color = models.CharField(max_length=100, verbose_name='Цвет', help_text='укажите цвет', null=True, blank=True)
 
     def get_categories(self):
         self.short_description = "Категории"
@@ -77,7 +78,7 @@ class Location(models.Model):
 
 
 class User_Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, verbose_name='аватарка')
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
@@ -88,7 +89,7 @@ class User_Profile(models.Model):
 
 
 class Car_Complekt(models.Model):
-    items = models.ManyToManyField(Car, verbose_name='товары', related_name='cars', blank=True)
+    items = models.ManyToManyField(Car, verbose_name='товары', blank=True, null=True)
     sell = models.PositiveIntegerField(default=0, null=True)
     total_before = models.PositiveIntegerField(null=True, default=0)
     total_after = models.PositiveIntegerField(null=True, default=0)

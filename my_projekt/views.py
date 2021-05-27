@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import ListView
 from django.core.paginator import Paginator
 from my_projekt.models import Car
+from django.db.models import Q
 
 
 class ContactListView(ListView):
@@ -118,6 +119,11 @@ class bay_a_car(MasterView):
 
     def get(self, request):
         # avatars = User_Profile.objects.get(user=request.user)
+        search_query = request.GET.get('search', '')
+        if search_query:
+            all_cars = Car.objects.filter(Q(color__incontains=search_query | Q(title__incontains=search_query)))
+        else:
+            all_cars = Car.objects.all()
         paginator = Paginator(self.all_cars, 4)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -173,14 +179,14 @@ class CartView(MasterView):
         }
         return render(request, 'cart.html', context)
 
-    def post(self, request, update_quantity=True):
+    def post(self, request):
         car = Car.objects.get(id=request.POST.get('car_id'))
         cart = self.get_cart()
         quantity = request.POST.get('qty')
         cart_content, _ = CartContent.objects.get_or_create(cart=cart, product=car)
         cart_content.qty = quantity
         cart_content.save()
-        response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id)))
+        response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id),))
         return response
 
 
