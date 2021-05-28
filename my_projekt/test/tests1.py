@@ -49,27 +49,47 @@ class TestCategory(TestCase):
 
 
 class TestCar(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        Category.objects.create(title='dwdwd', description='dwdwdwd')
-        Company.objects.create(title='dwdwdw')
 
     def test_create_car(self):
-        categories = Category.objects.get(id=1)
-        company = Company.objects.get(id=1)
+        self.company = Company.objects.create(title='zxczxc')
         payload = {
             'title': 'electro car',
             'description': 'dawdasdw',
             'price': 3412341,
-            'categories': [categories.id],
-            'company': company.id,
+            'company': self.company,
         }
         car = Car.objects.create(**payload)
-        company_objects_for_car = Company.objects.all()
-        car.company.set(company_objects_for_car)  # Присвоение типов many-to-many напрямую недопустимо
-        car.save()
 
         self.assertEqual(car.description, payload['description'])
+
+    def test_update_car(self):
+        self.company = Company.objects.create(title='zxczxc')
+        new_car = 'new test title'
+        payload = {
+            'title': 'electro car',
+            'description': 'dawdasdw',
+            'price': 3412341,
+            'company': self.company,
+        }
+        car = Car.objects.create(**payload)
+        car.title = new_car
+        car.save()
+        car.refresh_from_db()
+        self.assertEqual(car.title, new_car)
+
+    def test_delete_car(self):
+        self.company = Company.objects.create(title='zxczxc')
+        payload = {
+            'title': 'electro car',
+            'description': 'dawdasdw',
+            'price': 3412341,
+            'company': self.company,
+        }
+        car = Car.objects.create(**payload)
+        pk = car.pk
+        car.delete()
+        with self.assertRaises(Car.DoesNotExist):
+            car = Car.objects.get(pk=pk)
 
 
 class TestCompany(TestCase):
@@ -104,13 +124,109 @@ class TestCompany(TestCase):
 
 class UserProfileTest(TestCase):
 
-    def test_create_user(self, instance):
-        user = User.objects.create_superuser(username='Add123', password='12.34.54.56', id=1)
-        location = Location.objects.create(country='russia')
+    def test_create_cart(self):
+        self.location = Location.objects.create(country='russia')
         payload = {
-            'user': [user.id],
             'description': 'dwdwdwd',
-            'location': location.id
+            'location': self.location
         }
-        user_profile = User_Profile.objects.create(**payload, user=instance)
-        self.assertEqual(user_profile.description, payload['description'])
+        profile = User_Profile.objects.create(**payload)
+        self.assertEqual(profile.description, payload['description'])
+
+    def test_user_profile_update(self):
+        self.location = Location.objects.create(country='russia')
+        profile_title = 'title'
+        payload = {
+            'description': 'dwdwdwd',
+            'location': self.location
+        }
+        profile = User_Profile.objects.create(**payload)
+        profile.title = profile_title
+        profile.save()
+        profile.refresh_from_db()
+        self.assertEqual(profile.title, profile_title)
+
+    def test_delete_profile(self):
+        self.location = Location.objects.create(country='russia')
+        payload = {
+            'description': 'dwdwdwd',
+            'location': self.location
+        }
+        profile = User_Profile.objects.create(**payload)
+        pk = profile.pk
+        profile.delete()
+        with self.assertRaises(User_Profile.DoesNotExist):
+            profile = User_Profile.objects.get(pk=pk)
+
+
+class TestCart(TestCase):
+    def test_create_cart(self):
+        payload = {
+            'total_cost': 12412412,
+            'session_key': 'gfd6576588'
+        }
+        cart = Cart.objects.create(**payload)
+        self.assertEqual(cart.total_cost, payload['total_cost'])
+
+    def test_cart_update(self):
+        cart_cost = 12412443543
+        payload = {
+            'total_cost': 12412412,
+            'session_key': 'gfd6576588'
+        }
+        cart = Cart.objects.create(**payload)
+        cart.total_cost = cart_cost
+        cart.save()
+        cart.refresh_from_db()
+        self.assertEqual(cart.total_cost, cart_cost)
+
+    def test_delete_profile(self):
+        payload = {
+            'total_cost': 12412412,
+            'session_key': 'gfd6576588'
+        }
+        cart = Cart.objects.create(**payload)
+        pk = cart.pk
+        cart.delete()
+        with self.assertRaises(Cart.DoesNotExist):
+            cart = Cart.objects.get(pk=pk)
+
+
+class TestContent(TestCase):
+    def test_create_content(self):
+        self.car = Car.objects.create(title='dsdwddawd', price=124124, description='dwdwdwd')
+        self.cart = Cart.objects.create(session_key='ddsfwd12412', total_cost=124121)
+        payload = {
+            'product': self.car,
+            'cart': self.cart
+        }
+        content = CartContent.objects.create(**payload)
+        self.assertEqual(content.product, payload['product'])
+
+    def test_content_update(self):
+        qty_cost = 124
+        self.car = Car.objects.create(title='dsdwddawd', price=124124, description='dwdwdwd')
+        self.cart = Cart.objects.create(session_key='ddsfwd12412', total_cost=124121)
+        payload = {
+            'product': self.car,
+            'cart': self.cart,
+            'qty': 12
+        }
+        content = CartContent.objects.create(**payload)
+        content.total_cost = qty_cost
+        content.save()
+        content.refresh_from_db()
+        self.assertEqual(content.total_cost, qty_cost)
+
+    def test_delete_delete(self):
+        self.car = Car.objects.create(title='dsdwddawd', price=124124, description='dwdwdwd')
+        self.cart = Cart.objects.create(session_key='ddsfwd12412', total_cost=124121)
+        payload = {
+            'product': self.car,
+            'cart': self.cart
+        }
+        content = CartContent.objects.create(**payload)
+        pk = content.pk
+        content.delete()
+        with self.assertRaises(CartContent.DoesNotExist):
+            content = CartContent.objects.get(pk=pk)
