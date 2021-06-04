@@ -53,6 +53,19 @@ class CategoryTests(APITestCase):
         with self.assertRaises(Category.DoesNotExist):
             category = Category.objects.get(pk=pk)
 
+    def test_reading_category(self):
+        self.client.login(username='Add234', password='16.10.1999.999')
+        category = Category.objects.create(title='test', description='test')
+        url = reverse('Category-list')
+        data = {
+            'title': 'test',
+            'description': 'test'
+        }
+        response = self.client.get(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data.get('title'), category.title)
+        self.assertEqual(data.get('description'), category.description)
+
 
 class AccountTests(APITestCase):
 
@@ -152,6 +165,24 @@ class CarTests(APITestCase):
         with self.assertRaises(Car.DoesNotExist):
             car = Car.objects.get(pk=pk)
 
+    def test_reading_car(self):
+        self.client.login(username='Add234', password='16.10.1999.999')
+        category = Category.objects.create(description='sdsdwd', title='sdwdwd')
+        company = Company.objects.create(title='sdwdwd')
+        car = Car.objects.create(title='electro_car', description='Tesla_X', price=123421, company=company)
+        url = reverse('car-list', )
+        data = {'description': 'Tesla_X',
+                'title': 'electro_car',
+                'price': 123421,
+                'category': [category.id],
+                'company': company.id,
+                }
+        response = self.client.get(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data.get('title'), car.title)
+        self.assertEqual(data.get('description'), car.description)
+        self.assertEqual(data.get('price'), car.price)
+
 
 class CompanyTest(APITestCase):
     def setUp(self):
@@ -197,6 +228,15 @@ class CompanyTest(APITestCase):
         with self.assertRaises(Company.DoesNotExist):
             company = Company.objects.get(pk=pk)
 
+    def test_reading_company(self):
+        self.client.login(username='Add234', password='16.10.1999.999')
+        url = (reverse('company-list'))
+        company = Company.objects.create(title='Tesla_1234')
+        data = {'title': 'Tesla_1234'}
+        response = self.client.get(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data.get('title'), company.title)
+
 
 class ProfileTest(APITestCase):
     def setUp(self):
@@ -237,25 +277,25 @@ class TestKit(APITestCase):
         self.assertEqual(Car.objects.count(), 1)
 
 
-class TestLoginApi(APITestCase):
-    profile_list_url = reverse('all-profiles')
-
-    def setUp(self):
-        self.user = User.objects.create_superuser(username='Add234', password='16.10.1999.999')
-
-    def test_login(self):
-        url = '/api/api-auth/login/'
-        data = {'username': 'Add234',
-                'password': '16.10.1999.999'
-                }
-        response = self.client.post(url, data, format='json')
-        self.token = response.data['access']
-        self.api_authentication()
-
-    def api_authentication(self):
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
-
-    def test_userprofile_list_authenticated(self):
-        self.client.login(username='Add234', password='16.10.1999.999')
-        response = self.client.get(self.profile_list_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+# class TestLoginApi(APITestCase):
+#     profile_list_url = reverse('all-profiles')
+#
+#     def setUp(self):
+#         self.user = User.objects.create_superuser(username='Add234', password='16.10.1999.999')
+#
+#     def test_login(self):
+#         url = '/api/api-auth/login/'
+#         data = {'username': 'Add234',
+#                 'password': '16.10.1999.999'
+#                 }
+#         response = self.client.post(url, data, format='json')
+#         self.token = response.data['access']
+#         self.api_authentication()
+#
+#     def api_authentication(self):
+#         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
+#
+#     def test_userprofile_list_authenticated(self):
+#         self.client.login(username='Add234', password='16.10.1999.999')
+#         response = self.client.get(self.profile_list_url)
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)

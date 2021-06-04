@@ -3,6 +3,7 @@ from my_projekt.models import Category, Company, Car, Cart, CartContent, User_Pr
 
 
 class TestCategory(TestCase):
+
     def test_create_category_success(self):
         payload = {
             'title': 'test_title'
@@ -46,6 +47,15 @@ class TestCategory(TestCase):
         category.delete()
         with self.assertRaises(Category.DoesNotExist):
             category = Category.objects.get(pk=pk)
+
+    def test_reading_category(self):
+        category = Category.objects.create(title='test', description='test')
+        exp_data = {
+            'title': 'test',
+            'description': 'test'
+        }
+        self.assertEqual(exp_data.get('title'), category.title)
+        self.assertEqual(exp_data.get('description'), category.description)
 
 
 class TestCar(TestCase):
@@ -91,6 +101,20 @@ class TestCar(TestCase):
         with self.assertRaises(Car.DoesNotExist):
             car = Car.objects.get(pk=pk)
 
+    def test_reading_car(self):
+        company = Company.objects.create(title='test')
+        car = Car.objects.create(title='test', description='test', price=12000, company=company)
+        exp_data = {
+            'title': 'test',
+            'description': 'test',
+            'price': 12000,
+            'company': company
+        }
+        self.assertEqual(exp_data.get('title'), car.title)
+        self.assertEqual(exp_data.get('description'), car.description)
+        self.assertEqual(exp_data.get('price'), car.price)
+        self.assertEqual(exp_data.get('company'), car.company)
+
 
 class TestCompany(TestCase):
     def create_company(self):
@@ -120,6 +144,13 @@ class TestCompany(TestCase):
         company.delete()
         with self.assertRaises(Company.DoesNotExist):
             company = Company.objects.get(pk=pk)
+
+    def test_reading_company(self):
+        company = Company.objects.create(title='test')
+        exp_data = {
+            'title': 'test',
+        }
+        self.assertEqual(exp_data.get('title'), company.title)
 
 
 class UserProfileTest(TestCase):
@@ -158,6 +189,16 @@ class UserProfileTest(TestCase):
         with self.assertRaises(User_Profile.DoesNotExist):
             profile = User_Profile.objects.get(pk=pk)
 
+    def test_reading_profile(self):
+        self.location = Location.objects.create(country='russia')
+        profile = User_Profile.objects.create(description='dwdwdwd', location=self.location)
+        exp_data = {
+            'description': 'dwdwdwd',
+            'location': self.location
+        }
+        self.assertEqual(exp_data.get('description'), profile.description)
+        self.assertEqual(exp_data.get('location'), profile.location)
+
 
 class TestCart(TestCase):
     def test_create_cart(self):
@@ -190,6 +231,15 @@ class TestCart(TestCase):
         cart.delete()
         with self.assertRaises(Cart.DoesNotExist):
             cart = Cart.objects.get(pk=pk)
+
+    def test_reading_cart(self):
+        cart = Cart.objects.create(total_cost=12412412, session_key='gfd6576588')
+        exp_data = {
+            'total_cost': 12412412,
+            'session_key': 'gfd6576588'
+        }
+        self.assertEqual(exp_data.get('total_cost'), cart.total_cost)
+        self.assertEqual(exp_data.get('session_key'), cart.session_key)
 
 
 class TestContent(TestCase):
@@ -230,3 +280,14 @@ class TestContent(TestCase):
         content.delete()
         with self.assertRaises(CartContent.DoesNotExist):
             content = CartContent.objects.get(pk=pk)
+
+    def test_reading_cart(self):
+        self.car = Car.objects.create(title='dsdwddawd', price=124124, description='dwdwdwd')
+        self.cart = Cart.objects.create(session_key='ddsfwd12412', total_cost=124121)
+        content = CartContent.objects.create(product=self.car, cart=self.cart)
+        exp_data = {
+            'product': self.car,
+            'cart': self.cart
+        }
+        self.assertEqual(exp_data.get('product'), content.product)
+        self.assertEqual(exp_data.get('cart'), content.cart)
