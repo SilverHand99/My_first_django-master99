@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'social_django',
     'api.restshop',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [

@@ -1,10 +1,14 @@
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import RequestsClient
+from rest_framework.test import APIRequestFactory, RequestsClient
 from rest_framework import status
 from my_projekt.models import Car, Category, Company, User_Profile, Car_Complekt, Location
 from my_projekt.models import User
 from django.urls import include, path, reverse
 from rest_framework.test import APITestCase, URLPatternsTestCase
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APIClient
 import requests
+from requests.auth import HTTPBasicAuth
 
 
 class CategoryTests(APITestCase):
@@ -238,64 +242,33 @@ class CompanyTest(APITestCase):
         self.assertEqual(data.get('title'), company.title)
 
 
-class ProfileTest(APITestCase):
-    def setUp(self):
-        self.user = User.objects.create_superuser(username='Add2324', password='16.10.1999.9999')
+class TestLoginRegisterApi(APITestCase):
 
-    def test_create_user_profile(self):
-        self.client.login(username='Add2324', password='16.10.1999.9999')
-        user = User.objects.create_user(username='Wdwdwd12', password='16.10.1999.9999')
-        location = Location.objects.create(country='Japan')
-        url = (reverse('profile-list'))
-        data = {'description': 'Tesla_1234',
-                'user': [user.id],
-                'location': location.id}
+    def test_register(self):
+        data = {
+            'username': 'add234',
+            'email': '16.10.1999.999',
+            'password1': 'wwwwww_WW_WW',
+            'password2': 'wwwwww_WW_WW'
+        }
+        url = reverse('register')
         response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(User_Profile.objects.count(), 1)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-
-class TestKit(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_superuser(username='Add234', password='16.10.1999.999')
+        self.user = User.objects.create_user(username='Add234', password='16.10.1999.999')
+        self.token = Token.objects.create(user=self.user)
 
-    def test_create_kit(self):
-        self.client.login(username='Add234', password='16.10.1999.999')
-        company = Company.objects.create(title='zxczxc')
-        categories = Category.objects.create(description='dwdwd', title='sdwdwd')
-        car = Car.objects.create(title='1231231', description='sdwdsdw', price=121312, company=company)
-        car.categories.add(categories.id)
-        car.save()
-        url = reverse('kit-list')
-        data = {'sell': 15,
-                'total_after': 2141350,
-                'total_before': 1234210,
-                'items': [car.id],
-                }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Car.objects.count(), 1)
+    def test_login_with_token(self):
+        client = RequestsClient()
+        response = client.get('http://127.0.0.1:8000/login/')
+        assert response.status_code == 200
+        csrftoken = response.cookies['csrftoken']
+        response = client.post('http://127.0.0.1:8000/login/', json={
+            'username': 'Add234',
+            'password': '16.10.1999.999'
+        }, headers={'X-CSRFToken': csrftoken})
+        assert response.status_code == 200
 
 
-# class TestLoginApi(APITestCase):
-#     profile_list_url = reverse('all-profiles')
-#
-#     def setUp(self):
-#         self.user = User.objects.create_superuser(username='Add234', password='16.10.1999.999')
-#
-#     def test_login(self):
-#         url = '/api/api-auth/login/'
-#         data = {'username': 'Add234',
-#                 'password': '16.10.1999.999'
-#                 }
-#         response = self.client.post(url, data, format='json')
-#         self.token = response.data['access']
-#         self.api_authentication()
-#
-#     def api_authentication(self):
-#         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
-#
-#     def test_userprofile_list_authenticated(self):
-#         self.client.login(username='Add234', password='16.10.1999.999')
-#         response = self.client.get(self.profile_list_url)
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+

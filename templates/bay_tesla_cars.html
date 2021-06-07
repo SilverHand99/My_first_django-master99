@@ -17,6 +17,7 @@
     <meta charset="UTF-8">
     <link href="/static/css/to_bay_something.css" rel="stylesheet">
     <script src="/static/js/bay_a_car.js"></script>
+    <script src="/static/js/lazy_load.js"></script>
 </head>
 <body>
 <header class="header">
@@ -72,7 +73,7 @@
 <div class="row justify-content-sm-start mx-0 ">
     {% for car in cars %}
         <div class="card offset-2 col-3 mt-4 p-3">
-            <img class="card-img w-100 h-100" src="{{ MEDIA_URL }}{{ car.image }}" alt="Card image cap">
+            <img class="card-img w-100 h-100"  src="{{ MEDIA_URL }}{{ car.image }}" alt="Card image cap">
             <div class="card-body">
                 <h5 class="card-title">{{ car.title }}</h5>
                 <p class="">{{ car.description }}</p>

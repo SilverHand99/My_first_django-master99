@@ -11,10 +11,12 @@ from django.views.generic import ListView
 from django.core.paginator import Paginator
 from my_projekt.models import Car
 from django.db.models import Q
+from django.core import serializers
+from api.restshop.Serializers import CartContentSerializer
 
 
 class ContactListView(ListView):
-    paginate_by = 2
+    paginate_by = 10
     model = Car
 
 
@@ -47,12 +49,16 @@ class MasterView(View):
     def get_cart(self):
         if self.request.user.is_authenticated:
             user_id = self.request.user.id
+            cart_content_id = self.request.COOKIES.get('car')
             try:
                 cart = Cart.objects.get(user_id=user_id)
             except ObjectDoesNotExist:
                 cart = Cart(user_id=user_id,
-                            total_cost=0)
+                            total_cost=0,
+                            )
                 cart.save()
+                cart_content = CartContent(product=cart_content_id)
+                cart_content.save()
         else:
             session_key = self.request.session.session_key
             self.request.session.modified = True
@@ -98,14 +104,14 @@ def log_in(request):
     return render(request, 'login.html', {'form': form})
 
 
-def register(request):
+def register(request, backend='django.contrib.auth.backends.ModelBackend'):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = True
             user.save()
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('/')
     else:
         form = RegisterForm()
@@ -124,7 +130,7 @@ class bay_a_car(MasterView):
             all_cars = Car.objects.filter(Q(color__incontains=search_query | Q(title__incontains=search_query)))
         else:
             all_cars = Car.objects.all()
-        paginator = Paginator(self.all_cars, 4)
+        paginator = Paginator(self.all_cars, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         form = SearchForm()
@@ -168,6 +174,7 @@ def oauth(request):
 
 
 class CartView(MasterView):
+
     def get(self, request):
         cart = self.get_cart()
         cart_records = self.get_cart_records(cart)
@@ -186,11 +193,15 @@ class CartView(MasterView):
         cart_content, _ = CartContent.objects.get_or_create(cart=cart, product=car)
         cart_content.qty = quantity
         cart_content.save()
-        response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id),))
+        car_content = self.get_cart_records()
+        car_records = serializers.serialize('json', list(car_content), fields=('product', 'id'))
+        response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id), ))
+        response.set_cookie('car', car_records)
         return response
 
 
-class delete_content(MasterView):
+class DeleteContent(MasterView):
+
     def get(self, request):
         cart = self.get_cart()
         cart_records = self.get_cart_records(cart)
