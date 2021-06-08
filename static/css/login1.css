@@ -42,4 +42,6 @@ form{
     background-size: contain;
     border-radius: 15%;
     display: block;
+    margin-left: 46%;
+    margin-top: 10px;
 }
