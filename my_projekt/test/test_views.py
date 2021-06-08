@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from my_projekt.models import User, Car
+from my_projekt.models import User, Car, Cart
 
 
 class ViewTest(TestCase):
@@ -9,6 +9,7 @@ class ViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        Cart.objects.create(total_cost=12412412, session_key='gfd6576588')
         number_of_cars = 10
         for car_num in range(number_of_cars):
             Car.objects.create(title='tesla' * car_num, description='electro_Car' * car_num, price=12312 * car_num)

@@ -16,7 +16,7 @@ from api.restshop.Serializers import CartContentSerializer
 
 
 class ContactListView(ListView):
-    paginate_by = 10
+    paginate_by = 5
     model = Car
 
 
@@ -127,7 +127,7 @@ class bay_a_car(MasterView):
         # avatars = User_Profile.objects.get(user=request.user)
         search_query = request.GET.get('search', '')
         if search_query:
-            all_cars = Car.objects.filter(Q(color__incontains=search_query | Q(title__incontains=search_query)))
+            all_cars = Car.objects.filter(Q(color__icontains=search_query | Q(title__icontains=search_query)))
         else:
             all_cars = Car.objects.all()
         paginator = Paginator(self.all_cars, 5)
@@ -144,7 +144,7 @@ class bay_a_car(MasterView):
         form = SearchForm(request.POST)
         search = request.POST.get('search')
         if form.is_valid() and search:
-            all_cars = all_cars.filter(title__contains=search)
+            all_cars = all_cars.filter(Q(title__contains=search) | Q(description__contains=search) | Q(color__contains=search) | Q(price__contains=search))
         else:
             form = SearchForm()
 
