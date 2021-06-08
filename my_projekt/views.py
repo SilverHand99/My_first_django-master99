@@ -124,18 +124,21 @@ class bay_a_car(MasterView):
     all_cars = Car.objects.all()
 
     def get(self, request):
-        # avatars = User_Profile.objects.get(user=request.user)
+        if self.request.user.is_authenticated:
+            avatars = User_Profile.objects.get(user=request.user)
+        else:
+            avatars = '/static/img/no_avatar.png'
         search_query = request.GET.get('search', '')
         if search_query:
             all_cars = Car.objects.filter(Q(color__icontains=search_query | Q(title__icontains=search_query)))
         else:
             all_cars = Car.objects.all()
-        paginator = Paginator(self.all_cars, 5)
+        paginator = Paginator(self.all_cars, 6)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         form = SearchForm()
         return render(request, 'bay_tesla_cars.html',
-                      {'cars': page_obj, 'form': form, 'user': request.user,  # 'avatars': avatars,
+                      {'cars': page_obj, 'form': form, 'user': request.user,  'avatars': avatars,
                        'page_obj': page_obj})
 
     def post(self, request):

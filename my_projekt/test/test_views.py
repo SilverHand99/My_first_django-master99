@@ -10,7 +10,7 @@ class ViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         Cart.objects.create(total_cost=12412412, session_key='gfd6576588')
-        number_of_cars = 10
+        number_of_cars = 12
         for car_num in range(number_of_cars):
             Car.objects.create(title='tesla' * car_num, description='electro_Car' * car_num, price=12312 * car_num)
 
@@ -80,9 +80,9 @@ class ViewTest(TestCase):
     def test_pagination_is_five(self):
         resp = self.client.get(reverse('bay'))
         self.assertEqual(resp.status_code, 200)
-        self.assertTrue(len(resp.context['page_obj']) == 5)
+        self.assertTrue(len(resp.context['page_obj']) == 6)
 
     def test_lists_all_cars(self):
         resp = self.client.get(reverse('bay') + '?page=2')
         self.assertEqual(resp.status_code, 200)
-        self.assertTrue(len(resp.context['page_obj']) == 5)
+        self.assertTrue(len(resp.context['page_obj']) == 6)

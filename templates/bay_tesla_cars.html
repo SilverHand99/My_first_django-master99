@@ -49,10 +49,14 @@
     <div class="my_conteiner">
         <a class="my_cart" href="/cart">Корзина<span class="badge">{{ request.COOKIES.cart_count }}</span></a>
     </div>
-<!--    <div class="avatar">-->
-<!--            <img class="avatar2" src="{{ MEDIA_URL }}{{ avatars.avatar }}" alt="">-->
-<!--        {{ forms.as_p }}-->
-<!--    </div>-->
+    <div class="avatar">
+        {% if user.is_authenticated %}
+            <img class="avatar2" src="{{ MEDIA_URL }}{{ avatars.avatar }}" alt="">
+        {% else %}
+            <img class="avatar2" src="/static/img/wpavatar.png" alt="">
+        {% endif %}
+        {{ forms.as_p }}
+    </div>
     <div class="for_login">
         <div class=" nav-item col-8 text-end">
             {% if user.is_authenticated %}
@@ -83,6 +87,7 @@
                 <li class="list-group-item">цвет: {{ car.color }}</li>
                 <li class="list-group-item">цена: {{ car.price }}</li>
                 <li class="list-group-item">категории: {{ car.get_categories }}</li>
+                <li class="list-group-item">категории: {{ car.company }}</li>
             </ul>
             <form action="/cart/" method="post">
                 {% csrf_token %}
