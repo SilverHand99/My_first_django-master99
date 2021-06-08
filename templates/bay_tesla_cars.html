@@ -99,8 +99,8 @@
 <div class="pagination">
     <span class="step-links">
         {% if page_obj.has_previous %}
-            <button class="btn btn-dark" type="submit"><a href="?page=1">&laquo; first</a></button>
-            <button type="submit"><a href="?page={{ page_obj.previous_page_number }}">previous</a></button>
+            <button class="btn btn-dark my_pagination" type="submit"><a class="my_pagination" href="?page=1">&laquo; first</a></button>
+            <button class="btn btn-dark my_pagination" type="submit"><a class="my_pagination" href="?page={{ page_obj.previous_page_number }}">previous</a></button>
         {% endif %}
 
         <span class="current">
@@ -108,8 +108,8 @@
         </span>
 
         {% if page_obj.has_next %}
-            <button type="submit"><a href="?page={{ page_obj.next_page_number }}">next</a></button>
-            <button type="submit"><a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></button>
+            <button class="btn-dark my_pagination" type="submit"><a class="my_pagination" href="?page={{ page_obj.next_page_number }}">next</a></button>
+            <button class="btn-dark my_pagination" type="submit"><a class="my_pagination" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></button>
         {% endif %}
     </span>
 </div>
@@ -120,9 +120,9 @@
     </div>
     <form action="{% url 'set_language' %}" method="get">
         {% csrf_token %}
-        <input name="lang" type="hidden" value="{{ request.get_full_path|slice:'3:' }}"/>
-        <input name="language" type="submit" value="en"/>
-        <input type="submit" value="ru">
+        <input class="btn-dark my_pagination" name="lang" type="hidden" value="{{ request.get_full_path|slice:'3:' }}"/>
+        <input class="btn-dark my_pagination" name="language" type="submit" value="en"/>
+        <input class="btn-dark my_pagination" type="submit" value="ru">
     </form>
 </footer>
 </body>

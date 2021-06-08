@@ -215,3 +215,11 @@ body{
     height: 100px;
     margin: 10px;
 }
+
+.my_pagination{
+    animation: none;
+    display: block;
+    color: white;
+    margin-top: 5px;
+    text-decoration: none;
+}
