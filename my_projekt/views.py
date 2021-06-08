@@ -106,7 +106,7 @@ def log_in(request):
     return render(request, 'login.html', {'form': form})
 
 
-def register(request, backend='django.contrib.auth.backends.ModelBackend'):
+def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
