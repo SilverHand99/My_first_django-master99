@@ -6,10 +6,10 @@ from django.utils import translation
 
 
 def set_language(request):
-    lang_code = request.GET.get('language', 'en')
+    lang_code = request.GET.get('LANGUAGES', 'ru')
     lang = get_language()
     if not lang_code:
-        lang_code = request.GET.get('lang_code', settings.LANGUAGE_CODE)
+        lang_code = request.GET.get('LANGUAGE_CODE', settings.LANGUAGE_CODE)
     next_url = request.META.get('HTTP_REFERER', None)
     if not is_safe_url:
         next_url = '/'

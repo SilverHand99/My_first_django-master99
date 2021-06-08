@@ -130,7 +130,7 @@ class bay_a_car(MasterView):
             all_cars = Car.objects.filter(Q(color__incontains=search_query | Q(title__incontains=search_query)))
         else:
             all_cars = Car.objects.all()
-        paginator = Paginator(self.all_cars, 10)
+        paginator = Paginator(self.all_cars, 5)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         form = SearchForm()

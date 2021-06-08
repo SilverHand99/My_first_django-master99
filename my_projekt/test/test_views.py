@@ -1,11 +1,17 @@
 from django.test import TestCase
 from django.urls import reverse
-from my_projekt.models import User
+from my_projekt.models import User, Car
 
 
 class ViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_superuser(username='ibrahim', password='16.10.1999',)
+        self.user = User.objects.create_superuser(username='ibrahim', password='16.10.1999', )
+
+    @classmethod
+    def setUpTestData(cls):
+        number_of_cars = 10
+        for car_num in range(number_of_cars):
+            Car.objects.create(title='tesla' * car_num, description='electro_Car' * car_num, price=12312 * car_num)
 
     def test_view(self):
         resp = self.client.get(reverse('index'))
@@ -70,5 +76,12 @@ class ViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'Change_profile.html')
 
+    def test_pagination_is_five(self):
+        resp = self.client.get(reverse('bay'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(len(resp.context['page_obj']) == 5)
 
-
+    def test_lists_all_cars(self):
+        resp = self.client.get(reverse('bay') + '?page=2')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(len(resp.context['page_obj']) == 5)

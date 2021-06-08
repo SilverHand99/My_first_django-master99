@@ -22,7 +22,7 @@ class LoginForm(forms.Form):
 
 
 class SearchForm(forms.Form):
-    search = forms.CharField(required=False, label='', )
+    search = forms.CharField(required=False, label='')
 
 
 class EditForm(forms.Form):
