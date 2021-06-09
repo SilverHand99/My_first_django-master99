@@ -151,12 +151,12 @@ class ViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'Change_profile.html')
 
-    def test_pagination_is_five(self):
+    def test_pagination_is_six(self):
         resp = self.client.get(reverse('bay'))
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(len(resp.context['page_obj']) == 6)
 
-    def test_lists_all_cars(self):
+    def test_lists2_all_cars(self):
         resp = self.client.get(reverse('bay') + '?page=2')
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(len(resp.context['page_obj']) == 6)
