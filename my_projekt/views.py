@@ -50,7 +50,7 @@ class MasterView(View):
         if self.request.user.is_authenticated:
             user_id = self.request.user.id
             car = Car(id=self.request.COOKIES.get('car_id'))
-            quantity = 1
+            quantity = self.request.COOKIES.get('qty')
             try:
                 cart = Cart.objects.get(user_id=user_id)
             except ObjectDoesNotExist:
@@ -215,6 +215,7 @@ class CartView(MasterView):
         car_records = car.id
         response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id), ))
         response.set_cookie('car_id', car_records)
+        response.set_cookie('qty', quantity)
         return response
 
 
