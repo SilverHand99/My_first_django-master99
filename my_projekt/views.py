@@ -213,9 +213,12 @@ class CartView(MasterView):
         cart_content.qty = quantity
         cart_content.save()
         car_records = car.id
+        records = self.get_cart_records()
+        rec = serializers.serialize('json', records)
         response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id), ))
         response.set_cookie('car_id', car_records)
         response.set_cookie('qty', quantity)
+        response.set_cookie('cart_content', rec)
         return response
 
 
