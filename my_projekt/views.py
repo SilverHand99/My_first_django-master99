@@ -49,7 +49,7 @@ class MasterView(View):
     def get_cart(self):
         if self.request.user.is_authenticated:
             user_id = self.request.user.id
-            cart_content_id = self.request.COOKIES.get('car')
+            car = self.request.COOKIES.get('car')
             try:
                 cart = Cart.objects.get(user_id=user_id)
             except ObjectDoesNotExist:
@@ -57,7 +57,7 @@ class MasterView(View):
                             total_cost=0,
                             )
                 cart.save()
-                cart_content = CartContent(product=cart_content_id)
+                cart_content, _ = CartContent(cart=cart, product=car)
                 cart_content.save()
         else:
             session_key = self.request.session.session_key
