@@ -267,3 +267,27 @@ body{
   display: flex;
   float: bottom;
 }
+.for_modelX{
+  color: white;
+  margin-left: 10%;
+  width: 350px;
+  height: 250px;
+  position: absolute;
+}
+.for_top_of_title{
+  color: red;
+}
+.for_model_salon{
+  height: 25%;
+  width: 35%;
+  height: 300px;
+  width: 450px;
+  margin-left: 50%;
+  position: absolute;
+  margin-right: 5%;
+}
+.for_model_img{
+  background-size: contain;
+  height: 300px;
+  width: 600px;
+}

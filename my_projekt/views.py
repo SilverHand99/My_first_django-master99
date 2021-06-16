@@ -13,6 +13,7 @@ from my_projekt.models import Car
 from django.db.models import Q
 from django.core import serializers
 from api.restshop.Serializers import CartContentSerializer
+import json
 
 
 class ContactListView(ListView):
@@ -51,8 +52,13 @@ class MasterView(View):
             user_id = self.request.user.id
             car = Car(id=self.request.COOKIES.get('car_id'))
             quantity = self.request.COOKIES.get('qty')
+            # cart_content1 = CartContent(self.request.COOKIES.get('cart_content'))
+            # cart_records = self.get_cart_records()
             try:
                 cart = Cart.objects.get(user_id=user_id)
+                # cart_content, _ = CartContent.objects.get_or_create(cart=cart, product=car)
+                # cart_content.qty = quantity
+                # cart_content.save()
             except ObjectDoesNotExist:
                 cart = Cart(user_id=user_id,
                             total_cost=0,
@@ -62,6 +68,8 @@ class MasterView(View):
                 cart_content.qty = quantity
                 cart_content.save()
         else:
+            car = Car(id=self.request.COOKIES.get('car_id'))
+            quantity = self.request.COOKIES.get('qty')
             session_key = self.request.session.session_key
             self.request.session.modified = True
             if not session_key:
@@ -69,6 +77,9 @@ class MasterView(View):
                 session_key = self.request.session.session_key
             try:
                 cart = Cart.objects.get(session_key=session_key)
+                cart_content, _ = CartContent.objects.get_or_create(cart=cart, product=car)
+                cart_content.qty = quantity
+                cart_content.save()
             except ObjectDoesNotExist:
                 cart = Cart(session_key=session_key,
                             total_cost=0)
@@ -160,14 +171,16 @@ class bay_a_car(MasterView):
             form = SearchForm()
 
         if self.request.user.is_authenticated:
+            avatars = User_Profile.objects.get(user=request.user)
             cart_content = self.get_cart_records()
             response = render(request, 'bay_tesla_cars.html', {'cars': all_cars, 'form': form,
-                                                               'user': request.user})
+                                                               'user': request.user, 'avatars': avatars})
             response.set_cookie('cart_count', len(cart_content))
             return response
         else:
+            avatars = '/static/img/no_avatar.png'
             response = render(request, 'bay_tesla_cars.html', {'cars': all_cars, 'form': form,
-                                                               'user': request.user})
+                                                               'user': request.user, 'avatars': avatars})
             return response
 
 
@@ -206,20 +219,27 @@ class CartView(MasterView):
         return render(request, 'cart.html', context)
 
     def post(self, request):
-        car = Car.objects.get(id=request.POST.get('car_id'))
-        cart = self.get_cart()
-        quantity = request.POST.get('qty')
-        cart_content, _ = CartContent.objects.get_or_create(cart=cart, product=car)
-        cart_content.qty = quantity
-        cart_content.save()
-        car_records = car.id
-        records = self.get_cart_records()
-        rec = serializers.serialize('json', records)
-        response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id), ))
-        response.set_cookie('car_id', car_records)
-        response.set_cookie('qty', quantity)
-        response.set_cookie('cart_content', rec)
-        return response
+        if self.request.user.is_authenticated:
+            car = Car.objects.get(id=request.POST.get('car_id'))
+            cart = self.get_cart()
+            quantity = request.POST.get('qty')
+            cart_content, _ = CartContent.objects.get_or_create(cart=cart, product=car)
+            cart_content.qty = quantity
+            cart_content.save()
+            response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id), ))
+            return response
+        else:
+            car = Car.objects.get(id=request.POST.get('car_id'))
+            cart = self.get_cart()
+            quantity = request.POST.get('qty')
+            car_records = car.id
+            records = (CartContent.objects.filter(cart_id=cart.id).values('product', 'qty', 'id'))
+            rec = json.dumps(list(records))
+            response = self.get_cart_records(cart, redirect('/bay_a_car/#car-{}'.format(car.id), ))
+            response.set_cookie('car_id', car_records)
+            response.set_cookie('qty', quantity)
+            response.set_cookie('cart_content', rec)
+            return response
 
 
 class DeleteContent(MasterView):
@@ -228,6 +248,11 @@ class DeleteContent(MasterView):
         cart = self.get_cart()
         cart_records = self.get_cart_records(cart)
         cart_records.delete()
+        if self.request.user.is_authenticated:
+            response = redirect('/cart/')
+            response.delete_cookie('car_id')
+            response.delete_cookie('qty')
+            return response
 
         return render(request, 'cart_delete.html')
 
